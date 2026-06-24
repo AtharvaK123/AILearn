@@ -9,1068 +9,1137 @@
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #0A0A0F;
-    --bg2: #111118;
-    --bg3: #1A1A26;
-    --surface: #1E1E2E;
-    --surface2: #252538;
-    --border: #2A2A40;
-    --border2: #333350;
-    --accent: #7C6FCD;
-    --accent2: #A78BFA;
-    --accent3: #C4B5FD;
-    --cyan: #22D3EE;
-    --green: #34D399;
-    --orange: #FB923C;
-    --red: #F87171;
-    --text: #E2E8F0;
-    --text2: #94A3B8;
-    --text3: #64748B;
-    --glow: rgba(124, 111, 205, 0.15);
-    --font-display: 'Space Grotesk', sans-serif;
-    --font-mono: 'Space Mono', monospace;
-    --font-body: 'Inter', sans-serif;
-  }
+:root {
+  --bg: #0A0A0F;
+  --bg2: #111118;
+  --bg3: #1A1A26;
+  --surface: #1E1E2E;
+  --surface2: #252538;
+  --border: #2A2A40;
+  --border2: #333350;
+  --accent: #7C6FCD;
+  --accent2: #A78BFA;
+  --accent3: #C4B5FD;
+  --cyan: #22D3EE;
+  --green: #34D399;
+  --orange: #FB923C;
+  --red: #F87171;
+  --yellow: #FCD34D;
+  --text: #E2E8F0;
+  --text2: #94A3B8;
+  --text3: #64748B;
+  --glow: rgba(124, 111, 205, 0.15);
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --font-body: 'Inter', sans-serif;
+}
 
-  html { scroll-behavior: smooth; }
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
 
-  /* ── SCROLLBAR ── */
-  ::-webkit-scrollbar { width: 6px; }
-  ::-webkit-scrollbar-track { background: var(--bg); }
-  ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
 
-  /* ══════════════════════════════════════
-     LANDING / AUTH SCREEN
-  ══════════════════════════════════════ */
-  #landing {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 2rem;
-    position: relative;
-    overflow: hidden;
-  }
+/* ══════════════════════════════════════
+   LANDING
+══════════════════════════════════════ */
+#landing {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
 
-  .grid-bg {
-    position: absolute; inset: 0;
-    background-image:
-      linear-gradient(rgba(124,111,205,0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(124,111,205,0.07) 1px, transparent 1px);
-    background-size: 60px 60px;
-    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
-  }
+.grid-bg {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(124,111,205,0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(124,111,205,0.07) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 40%, transparent 100%);
+}
 
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-  }
-  .orb-1 { width:500px;height:500px;background:rgba(124,111,205,0.18);top:-100px;left:-100px; }
-  .orb-2 { width:400px;height:400px;background:rgba(34,211,238,0.1);bottom:-80px;right:-80px; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); pointer-events: none; }
+.orb-1 { width:500px;height:500px;background:rgba(124,111,205,0.18);top:-100px;left:-100px; }
+.orb-2 { width:400px;height:400px;background:rgba(34,211,238,0.1);bottom:-80px;right:-80px; }
 
-  .landing-inner {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2rem;
-    width: 100%;
-    max-width: 460px;
-  }
+.landing-inner {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+  max-width: 460px;
+}
 
-  .logo-lockup {
-    text-align: center;
-  }
-  .logo-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 0.35rem 1rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    color: var(--accent3);
-    letter-spacing: 0.12em;
-    margin-bottom: 1.25rem;
-  }
-  .logo-badge::before { content: '◈'; }
+.logo-lockup { text-align: center; }
+.logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.35rem 1rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent3);
+  letter-spacing: 0.12em;
+  margin-bottom: 1.25rem;
+}
+.logo-badge::before { content: '◈'; }
 
-  .logo-text {
-    font-family: var(--font-display);
-    font-size: clamp(3rem, 10vw, 5rem);
-    font-weight: 700;
-    letter-spacing: -0.03em;
-    line-height: 1;
-    background: linear-gradient(135deg, #fff 0%, var(--accent3) 60%, var(--cyan) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .logo-sub {
-    font-family: var(--font-body);
-    font-size: 1rem;
-    color: var(--text2);
-    margin-top: 0.75rem;
-    font-weight: 300;
-    letter-spacing: 0.01em;
-  }
+.logo-text {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 10vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  background: linear-gradient(135deg, #fff 0%, var(--accent3) 60%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.logo-sub {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--text2);
+  margin-top: 0.75rem;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+}
 
-  /* AUTH CARD */
-  .auth-card {
-    width: 100%;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2rem;
-    box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 40px 80px rgba(0,0,0,0.5);
-  }
+.auth-card {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.03), 0 40px 80px rgba(0,0,0,0.5);
+}
 
-  .auth-tabs {
-    display: flex;
-    gap: 0;
-    background: var(--bg3);
-    border-radius: 10px;
-    padding: 4px;
-    margin-bottom: 1.75rem;
-  }
-  .auth-tab {
-    flex: 1;
-    padding: 0.55rem;
-    text-align: center;
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--text3);
-    cursor: pointer;
-    border-radius: 7px;
-    transition: all 0.2s;
-    border: none;
-    background: transparent;
-  }
-  .auth-tab.active {
-    background: var(--accent);
-    color: #fff;
-    box-shadow: 0 2px 8px rgba(124,111,205,0.4);
-  }
+.auth-tabs {
+  display: flex;
+  background: var(--bg3);
+  border-radius: 10px;
+  padding: 4px;
+  margin-bottom: 1.75rem;
+}
+.auth-tab {
+  flex: 1;
+  padding: 0.55rem;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text3);
+  cursor: pointer;
+  border-radius: 7px;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+}
+.auth-tab.active {
+  background: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(124,111,205,0.4);
+}
 
-  .auth-form { display: flex; flex-direction: column; gap: 1rem; }
-  .field-group { display: flex; flex-direction: column; gap: 0.4rem; }
-  .field-label {
-    font-size: 0.78rem;
-    font-weight: 500;
-    color: var(--text2);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-family: var(--font-display);
-  }
-  .field-input {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.75rem 1rem;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    width: 100%;
-  }
-  .field-input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(124,111,205,0.15);
-  }
-  .field-input::placeholder { color: var(--text3); }
+.auth-form { display: flex; flex-direction: column; gap: 1rem; }
+.field-group { display: flex; flex-direction: column; gap: 0.4rem; }
+.field-label {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--text2);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-family: var(--font-display);
+}
+.field-input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+.field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(124,111,205,0.15); }
+.field-input::placeholder { color: var(--text3); }
 
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
-    color: #fff;
-    border: none;
-    border-radius: 10px;
-    padding: 0.85rem;
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    letter-spacing: 0.01em;
-    box-shadow: 0 4px 20px rgba(124,111,205,0.35);
-  }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,111,205,0.5); }
-  .btn-primary:active { transform: translateY(0); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--accent) 0%, #6366f1 100%);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 0.85rem;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  letter-spacing: 0.01em;
+  box-shadow: 0 4px 20px rgba(124,111,205,0.35);
+}
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 28px rgba(124,111,205,0.5); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-  .auth-msg { font-size: 0.83rem; color: var(--text3); text-align: center; margin-top: 0.25rem; }
-  .auth-msg.error { color: var(--red); }
-  .auth-msg.success { color: var(--green); }
+.auth-msg { font-size: 0.83rem; color: var(--text3); text-align: center; margin-top: 0.25rem; min-height: 1.2rem; }
+.auth-msg.error { color: var(--red); }
+.auth-msg.success { color: var(--green); }
 
-  .landing-stats {
-    display: flex;
-    gap: 2rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .stat-item {
-    text-align: center;
-  }
-  .stat-num {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, var(--accent3), var(--cyan));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-  .stat-label { font-size: 0.75rem; color: var(--text3); margin-top: 0.1rem; }
+.landing-stats {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.stat-item { text-align: center; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent3), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.stat-label { font-size: 0.75rem; color: var(--text3); margin-top: 0.1rem; }
 
-  /* ══════════════════════════════════════
-     MAIN APP
-  ══════════════════════════════════════ */
-  #app { display: none; min-height: 100vh; }
+/* ══════════════════════════════════════
+   MAIN APP
+══════════════════════════════════════ */
+#app { display: none; min-height: 100vh; }
 
-  /* SIDEBAR */
-  .sidebar {
-    position: fixed;
-    left: 0; top: 0; bottom: 0;
-    width: 260px;
-    background: var(--bg2);
-    border-right: 1px solid var(--border);
-    display: flex;
-    flex-direction: column;
-    z-index: 100;
-    transition: transform 0.3s;
-  }
+.sidebar {
+  position: fixed;
+  left: 0; top: 0; bottom: 0;
+  width: 260px;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  transition: transform 0.3s;
+}
 
-  .sidebar-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 1.5rem 1.5rem 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .sidebar-logo-icon {
-    width: 36px; height: 36px;
-    background: linear-gradient(135deg, var(--accent), #6366f1);
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    flex-shrink: 0;
-  }
-  .sidebar-logo-text {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    font-weight: 700;
-    background: linear-gradient(135deg, #fff, var(--accent3));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 1.5rem 1rem;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.sidebar-logo-text {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #fff, var(--accent3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-  .sidebar-user {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-  }
-  .user-greeting { font-size: 0.72rem; color: var(--text3); margin-bottom: 0.2rem; }
-  .user-name {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--text);
-  }
-  .user-level {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35rem;
-    background: var(--glow);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 0.2rem 0.7rem;
-    font-size: 0.7rem;
-    color: var(--accent3);
-    font-family: var(--font-mono);
-    margin-top: 0.5rem;
-  }
+.sidebar-user {
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.user-greeting { font-size: 0.72rem; color: var(--text3); margin-bottom: 0.2rem; }
+.user-name { font-family: var(--font-display); font-weight: 600; font-size: 1rem; color: var(--text); }
+.user-level {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: var(--glow);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.7rem;
+  color: var(--accent3);
+  font-family: var(--font-mono);
+  margin-top: 0.5rem;
+}
 
-  .sidebar-nav {
-    flex: 1;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.25rem;
-    overflow-y: auto;
-  }
-  .nav-section-label {
-    font-size: 0.65rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text3);
-    padding: 0.75rem 0.5rem 0.35rem;
-    font-family: var(--font-display);
-  }
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.65rem 0.75rem;
-    border-radius: 10px;
-    cursor: pointer;
-    color: var(--text2);
-    font-size: 0.875rem;
-    font-weight: 500;
-    transition: all 0.15s;
-    border: 1px solid transparent;
-    font-family: var(--font-display);
-    position: relative;
-  }
-  .nav-item:hover { background: var(--surface); color: var(--text); }
-  .nav-item.active {
-    background: var(--glow);
-    border-color: var(--border);
-    color: var(--accent3);
-  }
-  .nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
-  .nav-item .nav-badge {
-    margin-left: auto;
-    background: var(--accent);
-    color: #fff;
-    font-size: 0.65rem;
-    font-family: var(--font-mono);
-    border-radius: 100px;
-    padding: 0.1rem 0.45rem;
-    font-weight: 700;
-  }
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  overflow-y: auto;
+}
+.nav-section-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 0.75rem 0.5rem 0.35rem;
+  font-family: var(--font-display);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  cursor: pointer;
+  color: var(--text2);
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+  font-family: var(--font-display);
+}
+.nav-item:hover { background: var(--surface); color: var(--text); }
+.nav-item.active { background: var(--glow); border-color: var(--border); color: var(--accent3); }
+.nav-item .nav-icon { font-size: 1rem; width: 20px; text-align: center; }
+.nav-item .nav-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.65rem;
+  font-family: var(--font-mono);
+  border-radius: 100px;
+  padding: 0.1rem 0.45rem;
+  font-weight: 700;
+}
 
-  .sidebar-bottom {
-    padding: 1rem;
-    border-top: 1px solid var(--border);
-  }
-  .btn-logout {
-    width: 100%;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.6rem;
-    color: var(--text3);
-    font-family: var(--font-display);
-    font-size: 0.825rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-logout:hover { border-color: var(--red); color: var(--red); }
+.sidebar-bottom {
+  padding: 1rem;
+  border-top: 1px solid var(--border);
+}
+.btn-logout {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.6rem;
+  color: var(--text3);
+  font-family: var(--font-display);
+  font-size: 0.825rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-logout:hover { border-color: var(--red); color: var(--red); }
 
-  /* MAIN CONTENT */
-  .main-content {
-    margin-left: 260px;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+.main-content { margin-left: 260px; min-height: 100vh; display: flex; flex-direction: column; }
 
-  .topbar {
-    position: sticky;
-    top: 0;
-    background: rgba(10,10,15,0.85);
-    backdrop-filter: blur(20px);
-    border-bottom: 1px solid var(--border);
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    z-index: 50;
-  }
-  .topbar-title {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 600;
-  }
-  .topbar-xp {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--accent3);
-  }
-  .xp-pill {
-    background: var(--glow);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 0.3rem 0.85rem;
-  }
+.topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(10,10,15,0.85);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 50;
+}
+.topbar-title { font-family: var(--font-display); font-size: 1.1rem; font-weight: 600; }
+.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
+.topbar-xp {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--accent3);
+}
+.xp-pill {
+  background: var(--glow);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.3rem 0.85rem;
+}
+.streak-pill {
+  background: rgba(251,146,60,0.1);
+  border: 1px solid rgba(251,146,60,0.2);
+  border-radius: 100px;
+  padding: 0.3rem 0.85rem;
+  color: var(--orange);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
 
-  .page-content {
-    padding: 2rem;
-    flex: 1;
-  }
+.page-content { padding: 2rem; flex: 1; }
 
-  /* VIEWS */
-  .view { display: none; animation: fadeIn 0.3s ease; }
-  .view.active { display: block; }
-  @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+/* VIEWS */
+.view { display: none; animation: fadeIn 0.3s ease; }
+.view.active { display: block; }
+@keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-  /* ── DASHBOARD ── */
-  .dash-hero {
-    background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 2rem;
-    margin-bottom: 2rem;
-    position: relative;
-    overflow: hidden;
-  }
-  .dash-hero::before {
-    content: '';
-    position: absolute;
-    right: -60px; top: -60px;
-    width: 300px; height: 300px;
-    background: radial-gradient(circle, rgba(124,111,205,0.15) 0%, transparent 70%);
-  }
-  .dash-hero-label {
-    font-size: 0.72rem;
-    font-family: var(--font-mono);
-    color: var(--accent2);
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-  .dash-hero-heading {
-    font-family: var(--font-display);
-    font-size: 1.75rem;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    position: relative;
-  }
-  .dash-hero-sub { color: var(--text2); font-size: 0.95rem; max-width: 500px; }
+/* ── DASHBOARD ── */
+.dash-hero {
+  background: linear-gradient(135deg, var(--surface) 0%, var(--surface2) 100%);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.dash-hero::before {
+  content: '';
+  position: absolute;
+  right: -60px; top: -60px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(124,111,205,0.15) 0%, transparent 70%);
+}
+.dash-hero-label { font-size: 0.72rem; font-family: var(--font-mono); color: var(--accent2); letter-spacing: 0.1em; margin-bottom: 0.5rem; }
+.dash-hero-heading { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; margin-bottom: 0.5rem; position: relative; }
+.dash-hero-sub { color: var(--text2); font-size: 0.95rem; max-width: 500px; }
 
-  .progress-bar-wrap {
-    margin-top: 1.5rem;
-    max-width: 420px;
-  }
-  .progress-bar-label {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.78rem;
-    color: var(--text2);
-    margin-bottom: 0.5rem;
-    font-family: var(--font-display);
-  }
-  .progress-bar {
-    height: 8px;
-    background: var(--bg3);
-    border-radius: 100px;
-    overflow: hidden;
-  }
-  .progress-bar-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--accent) 0%, var(--cyan) 100%);
-    border-radius: 100px;
-    transition: width 0.8s ease;
-  }
+.progress-bar-wrap { margin-top: 1.5rem; max-width: 420px; }
+.progress-bar-label {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.78rem;
+  color: var(--text2);
+  margin-bottom: 0.5rem;
+  font-family: var(--font-display);
+}
+.progress-bar { height: 8px; background: var(--bg3); border-radius: 100px; overflow: hidden; }
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--cyan) 100%);
+  border-radius: 100px;
+  transition: width 0.8s ease;
+}
 
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.25rem;
-    transition: border-color 0.2s;
-  }
-  .stat-card:hover { border-color: var(--border2); }
-  .stat-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
-  .stat-card-num {
-    font-family: var(--font-display);
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .stat-card-label { font-size: 0.8rem; color: var(--text3); margin-top: 0.2rem; }
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+  transition: border-color 0.2s;
+}
+.stat-card:hover { border-color: var(--border2); }
+.stat-card-icon { font-size: 1.5rem; margin-bottom: 0.75rem; }
+.stat-card-num { font-family: var(--font-display); font-size: 1.75rem; font-weight: 700; color: var(--text); }
+.stat-card-label { font-size: 0.8rem; color: var(--text3); margin-top: 0.2rem; }
 
-  .section-heading {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+.section-heading {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
 
-  /* TRACK CARDS */
-  .tracks-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 1.25rem;
-  }
-  .track-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    position: relative;
-    overflow: hidden;
-  }
-  .track-card:hover {
-    border-color: var(--border2);
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-  }
-  .track-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
-    border-radius: 16px 16px 0 0;
-  }
-  .track-card[data-color="purple"]::before { background: linear-gradient(90deg, var(--accent), #6366f1); }
-  .track-card[data-color="cyan"]::before { background: linear-gradient(90deg, var(--cyan), #0ea5e9); }
-  .track-card[data-color="green"]::before { background: linear-gradient(90deg, var(--green), #10b981); }
-  .track-card[data-color="orange"]::before { background: linear-gradient(90deg, var(--orange), #f59e0b); }
+.tracks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+.track-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+.track-card:hover { border-color: var(--border2); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
+.track-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  border-radius: 16px 16px 0 0;
+}
+.track-card[data-color="purple"]::before { background: linear-gradient(90deg, var(--accent), #6366f1); }
+.track-card[data-color="cyan"]::before { background: linear-gradient(90deg, var(--cyan), #0ea5e9); }
+.track-card[data-color="green"]::before { background: linear-gradient(90deg, var(--green), #10b981); }
+.track-card[data-color="orange"]::before { background: linear-gradient(90deg, var(--orange), #f59e0b); }
 
-  .track-icon { font-size: 2rem; margin-bottom: 0.75rem; }
-  .track-title {
-    font-family: var(--font-display);
-    font-size: 1.05rem;
-    font-weight: 700;
-    margin-bottom: 0.35rem;
-  }
-  .track-desc { font-size: 0.83rem; color: var(--text2); line-height: 1.5; margin-bottom: 1rem; }
-  .track-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.75rem;
-    color: var(--text3);
-    font-family: var(--font-mono);
-  }
-  .track-progress-pill {
-    padding: 0.2rem 0.6rem;
-    border-radius: 100px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    font-family: var(--font-display);
-  }
-  .track-progress-pill.not-started { background: var(--bg3); color: var(--text3); }
-  .track-progress-pill.in-progress { background: rgba(124,111,205,0.2); color: var(--accent3); }
-  .track-progress-pill.completed { background: rgba(52,211,153,0.2); color: var(--green); }
+.track-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+.track-title { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.35rem; }
+.track-desc { font-size: 0.83rem; color: var(--text2); line-height: 1.5; margin-bottom: 1rem; }
+.track-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: var(--text3); font-family: var(--font-mono); }
+.track-progress-pill { padding: 0.2rem 0.6rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; font-family: var(--font-display); }
+.track-progress-pill.not-started { background: var(--bg3); color: var(--text3); }
+.track-progress-pill.in-progress { background: rgba(124,111,205,0.2); color: var(--accent3); }
+.track-progress-pill.completed { background: rgba(52,211,153,0.2); color: var(--green); }
 
-  /* ── LESSON VIEW ── */
-  .lesson-list { display: flex; flex-direction: column; gap: 0.75rem; }
-  .lesson-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.1rem 1.25rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .lesson-item:hover { border-color: var(--border2); background: var(--surface2); }
-  .lesson-item.locked { opacity: 0.5; cursor: not-allowed; }
-  .lesson-item.completed { border-color: rgba(52,211,153,0.3); }
-  .lesson-num {
-    width: 36px; height: 36px;
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .lesson-num.todo { background: var(--bg3); color: var(--text3); }
-  .lesson-num.done { background: rgba(52,211,153,0.15); color: var(--green); }
-  .lesson-num.active-lesson { background: rgba(124,111,205,0.2); color: var(--accent3); }
-  .lesson-info { flex: 1; }
-  .lesson-title { font-family: var(--font-display); font-weight: 600; font-size: 0.925rem; }
-  .lesson-sub { font-size: 0.78rem; color: var(--text3); margin-top: 0.2rem; }
-  .lesson-xp {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--accent2);
-    background: var(--glow);
-    padding: 0.2rem 0.5rem;
-    border-radius: 6px;
-  }
+/* ── LESSON LIST ── */
+.lesson-list { display: flex; flex-direction: column; gap: 0.75rem; }
+.lesson-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.1rem 1.25rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.lesson-item:hover { border-color: var(--border2); background: var(--surface2); }
+.lesson-item.locked { opacity: 0.45; cursor: not-allowed; }
+.lesson-item.completed { border-color: rgba(52,211,153,0.3); }
+.lesson-item.completed:hover { border-color: rgba(52,211,153,0.5); }
+.lesson-num {
+  width: 38px; height: 38px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.lesson-num.todo { background: var(--bg3); color: var(--text3); }
+.lesson-num.done { background: rgba(52,211,153,0.15); color: var(--green); }
+.lesson-num.current { background: rgba(124,111,205,0.2); color: var(--accent3); }
+.lesson-info { flex: 1; min-width: 0; }
+.lesson-title { font-family: var(--font-display); font-weight: 600; font-size: 0.925rem; }
+.lesson-sub { font-size: 0.78rem; color: var(--text3); margin-top: 0.2rem; }
+.lesson-xp {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--accent2);
+  background: var(--glow);
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
 
-  /* ── LESSON CONTENT ── */
-  #lesson-content-view { max-width: 760px; }
-  .lesson-content-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  .btn-back {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.5rem 1rem;
-    color: var(--text2);
-    font-family: var(--font-display);
-    font-size: 0.825rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-back:hover { border-color: var(--border2); color: var(--text); }
+/* ── LESSON CONTENT ── */
+#lesson-content-view { max-width: 780px; }
+.lesson-content-header { display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
+.btn-back {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  color: var(--text2);
+  font-family: var(--font-display);
+  font-size: 0.825rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.btn-back:hover { border-color: var(--border2); color: var(--text); }
+.lesson-content-title { font-family: var(--font-display); font-size: 1.5rem; font-weight: 700; }
 
-  .lesson-content-title {
-    font-family: var(--font-display);
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
+.content-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.8;
+  color: var(--text2);
+  font-size: 0.95rem;
+}
+.content-block h3 { font-family: var(--font-display); color: var(--text); font-size: 1.1rem; margin-bottom: 0.75rem; margin-top: 1.25rem; }
+.content-block h3:first-child { margin-top: 0; }
+.content-block p { margin-bottom: 0.75rem; }
+.content-block p:last-child { margin-bottom: 0; }
+.content-block strong { color: var(--text); }
 
-  .content-block {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.75rem;
-    margin-bottom: 1.25rem;
-    line-height: 1.75;
-    color: var(--text2);
-    font-size: 0.95rem;
-  }
-  .content-block h3 {
-    font-family: var(--font-display);
-    color: var(--text);
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-  }
-  .content-block p { margin-bottom: 0.75rem; }
-  .content-block p:last-child { margin-bottom: 0; }
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin: 1rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.825rem;
+  color: var(--cyan);
+  overflow-x: auto;
+  line-height: 1.65;
+  white-space: pre;
+}
+.code-block .comment { color: var(--text3); }
+.code-block .keyword { color: var(--accent3); }
+.code-block .string { color: var(--green); }
 
-  .code-block {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 1.25rem;
-    margin: 1rem 0;
-    font-family: var(--font-mono);
-    font-size: 0.825rem;
-    color: var(--cyan);
-    overflow-x: auto;
-    position: relative;
-    line-height: 1.6;
-    white-space: pre;
-  }
-  .code-block .comment { color: var(--text3); }
-  .code-block .keyword { color: var(--accent3); }
-  .code-block .string { color: var(--green); }
+.quiz-block {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  padding: 1.75rem;
+  margin-bottom: 1.25rem;
+}
+.quiz-q { font-family: var(--font-display); font-size: 1rem; font-weight: 600; margin-bottom: 1.25rem; color: var(--text); }
+.quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text2);
+  transition: all 0.15s;
+  font-family: var(--font-display);
+  user-select: none;
+}
+.quiz-option:hover:not(.correct):not(.wrong) { border-color: var(--accent); color: var(--text); }
+.quiz-option.correct { border-color: var(--green); background: rgba(52,211,153,0.1); color: var(--green); }
+.quiz-option.wrong { border-color: var(--red); background: rgba(248,113,113,0.1); color: var(--red); }
+.quiz-option.disabled { cursor: default; }
+.opt-letter {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  background: var(--bg3);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
 
-  .quiz-block {
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 16px;
-    padding: 1.75rem;
-    margin-bottom: 1.25rem;
-  }
-  .quiz-q {
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    margin-bottom: 1.25rem;
-    color: var(--text);
-  }
-  .quiz-options { display: flex; flex-direction: column; gap: 0.6rem; }
-  .quiz-option {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    padding: 0.85rem 1rem;
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.875rem;
-    color: var(--text2);
-    transition: all 0.15s;
-    font-family: var(--font-display);
-  }
-  .quiz-option:hover { border-color: var(--accent); color: var(--text); }
-  .quiz-option.correct { border-color: var(--green); background: rgba(52,211,153,0.1); color: var(--green); }
-  .quiz-option.wrong { border-color: var(--red); background: rgba(248,113,113,0.1); color: var(--red); }
-  .quiz-option .opt-letter {
-    width: 28px; height: 28px;
-    border-radius: 8px;
-    background: var(--bg3);
-    display: flex; align-items: center; justify-content: center;
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
+.quiz-result {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-family: var(--font-display);
+  display: none;
+}
+.quiz-result.correct { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
+.quiz-result.wrong { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
 
-  .quiz-result {
-    margin-top: 1rem;
-    padding: 0.75rem 1rem;
-    border-radius: 10px;
-    font-size: 0.875rem;
-    font-family: var(--font-display);
-    display: none;
-  }
-  .quiz-result.correct { background: rgba(52,211,153,0.15); color: var(--green); border: 1px solid rgba(52,211,153,0.3); }
-  .quiz-result.wrong { background: rgba(248,113,113,0.1); color: var(--red); border: 1px solid rgba(248,113,113,0.2); }
+.btn-complete {
+  width: 100%;
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  border: none;
+  border-radius: 12px;
+  padding: 1rem;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 1rem;
+  box-shadow: 0 4px 20px rgba(124,111,205,0.35);
+}
+.btn-complete:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,111,205,0.5); }
+.btn-complete.already-done {
+  background: rgba(52,211,153,0.15) !important;
+  color: var(--green) !important;
+  border: 1px solid rgba(52,211,153,0.3) !important;
+  box-shadow: none !important;
+  transform: none !important;
+  cursor: default;
+}
 
-  .btn-complete {
-    width: 100%;
-    background: linear-gradient(135deg, var(--accent), #6366f1);
-    border: none;
-    border-radius: 12px;
-    padding: 1rem;
-    color: #fff;
-    font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 1rem;
-    box-shadow: 0 4px 20px rgba(124,111,205,0.35);
-  }
-  .btn-complete:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(124,111,205,0.5); }
+/* ── CODE SANDBOX ── */
+.sandbox-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  height: calc(100vh - 180px);
+  min-height: 500px;
+}
+.sandbox-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg2);
+  flex-shrink: 0;
+}
+.panel-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.dot { width: 8px; height: 8px; border-radius: 50%; }
+.dot-red { background: #FF5F56; }
+.dot-yellow { background: #FFBD2E; }
+.dot-green { background: #27C93F; }
+.code-editor {
+  flex: 1;
+  background: var(--bg);
+  border: none;
+  padding: 1.25rem;
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  resize: none;
+  outline: none;
+  line-height: 1.7;
+  tab-size: 2;
+}
+.code-output {
+  flex: 1;
+  padding: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--green);
+  overflow-y: auto;
+  white-space: pre-wrap;
+  line-height: 1.65;
+  word-break: break-word;
+}
+.btn-run {
+  background: rgba(52,211,153,0.15);
+  border: 1px solid rgba(52,211,153,0.3);
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  color: var(--green);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.btn-run:hover { background: rgba(52,211,153,0.25); }
+.btn-clear-output {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.4rem 0.85rem;
+  color: var(--text3);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-clear-output:hover { border-color: var(--border2); color: var(--text2); }
 
-  /* ── CODE SANDBOX ── */
-  .sandbox-layout {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.25rem;
-    height: calc(100vh - 160px);
-  }
-  .sandbox-panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .panel-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.85rem 1.25rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--bg2);
-  }
-  .panel-title {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--text2);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .dot { width: 8px; height: 8px; border-radius: 50%; }
-  .dot-red { background: #FF5F56; }
-  .dot-yellow { background: #FFBD2E; }
-  .dot-green { background: #27C93F; }
-  .code-editor {
-    flex: 1;
-    background: var(--bg);
-    border: none;
-    padding: 1.25rem;
-    color: var(--cyan);
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    resize: none;
-    outline: none;
-    line-height: 1.7;
-    tab-size: 2;
-  }
-  .code-output {
-    flex: 1;
-    padding: 1.25rem;
-    font-family: var(--font-mono);
-    font-size: 0.82rem;
-    color: var(--green);
-    overflow-y: auto;
-    white-space: pre-wrap;
-    line-height: 1.6;
-  }
-  .btn-run {
-    background: rgba(52,211,153,0.15);
-    border: 1px solid rgba(52,211,153,0.3);
-    border-radius: 8px;
-    padding: 0.4rem 0.85rem;
-    color: var(--green);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-run:hover { background: rgba(52,211,153,0.25); }
+/* ── PROMPT LAB ── */
+.prompt-lab-layout { max-width: 800px; }
+.prompt-area {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 1.25rem;
+  transition: border-color 0.2s;
+}
+.prompt-area:focus-within { border-color: var(--accent); }
+.prompt-input-wrap { padding: 1.25rem; }
+.prompt-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  resize: none;
+  min-height: 120px;
+}
+.prompt-textarea::placeholder { color: var(--text3); }
+.prompt-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-top: 1px solid var(--border);
+  background: var(--bg2);
+}
+.prompt-tip { font-size: 0.75rem; color: var(--text3); font-family: var(--font-mono); }
+.btn-send {
+  background: linear-gradient(135deg, var(--accent), #6366f1);
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.25rem;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.btn-send:hover { box-shadow: 0 4px 16px rgba(124,111,205,0.4); }
+.btn-send:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  /* ── PROMPT LAB ── */
-  .prompt-lab-layout { max-width: 760px; }
-  .prompt-area {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    overflow: hidden;
-    margin-bottom: 1.25rem;
-  }
-  .prompt-input-wrap { padding: 1.25rem; }
-  .prompt-textarea {
-    width: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 0.95rem;
-    line-height: 1.6;
-    resize: none;
-    min-height: 120px;
-  }
-  .prompt-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.25rem;
-    border-top: 1px solid var(--border);
-    background: var(--bg2);
-  }
-  .prompt-tip { font-size: 0.75rem; color: var(--text3); font-family: var(--font-mono); }
-  .btn-send {
-    background: linear-gradient(135deg, var(--accent), #6366f1);
-    border: none;
-    border-radius: 8px;
-    padding: 0.55rem 1.25rem;
-    color: #fff;
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-  .btn-send:hover { box-shadow: 0 4px 16px rgba(124,111,205,0.4); }
+.prompt-response {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+  color: var(--text2);
+  font-size: 0.9rem;
+  line-height: 1.75;
+  display: none;
+}
+.prompt-response.visible { display: block; }
+.prompt-response.loading { color: var(--text3); font-style: italic; display: flex; align-items: center; gap: 0.75rem; }
 
-  .prompt-response {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1.25rem;
-    min-height: 100px;
-    color: var(--text2);
-    font-size: 0.9rem;
-    line-height: 1.7;
-    display: none;
-  }
-  .prompt-response.visible { display: block; }
-  .prompt-response.loading { color: var(--text3); font-style: italic; }
+.typing-dots { display: flex; gap: 4px; }
+.typing-dots span {
+  width: 6px; height: 6px;
+  background: var(--accent3);
+  border-radius: 50%;
+  animation: bounce 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes bounce { 0%,60%,100% { transform:translateY(0); } 30% { transform:translateY(-6px); } }
 
-  .prompt-examples {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.25rem;
-  }
-  .examples-title {
-    font-family: var(--font-display);
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--text2);
-    margin-bottom: 0.75rem;
-  }
-  .example-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-  .example-chip {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    padding: 0.35rem 0.85rem;
-    font-size: 0.78rem;
-    color: var(--text2);
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: var(--font-display);
-  }
-  .example-chip:hover { border-color: var(--accent); color: var(--accent3); }
+.prompt-history { margin-bottom: 1.25rem; }
+.history-entry {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+}
+.history-entry-q { font-family: var(--font-display); font-size: 0.8rem; font-weight: 600; color: var(--accent3); margin-bottom: 0.5rem; }
+.history-entry-a { font-size: 0.875rem; color: var(--text2); line-height: 1.6; }
 
-  /* ── DATA COLLECTION ── */
-  .data-view { max-width: 800px; }
-  .data-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
-  .data-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 14px;
-    padding: 1.25rem;
-  }
-  .data-card-title {
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--text2);
-  }
-  .data-value {
-    font-family: var(--font-mono);
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--text);
-  }
-  .data-sub { font-size: 0.75rem; color: var(--text3); margin-top: 0.25rem; }
+.prompt-examples {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.25rem;
+}
+.examples-title { font-family: var(--font-display); font-size: 0.85rem; font-weight: 600; color: var(--text2); margin-bottom: 0.75rem; }
+.example-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.example-chip {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.78rem;
+  color: var(--text2);
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--font-display);
+}
+.example-chip:hover { border-color: var(--accent); color: var(--accent3); }
 
-  .dataset-entry {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem;
-    margin-bottom: 1rem;
-  }
-  .dataset-label {
-    font-family: var(--font-display);
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text2);
-    margin-bottom: 0.5rem;
-  }
-  .dataset-input {
-    background: var(--bg2);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.65rem 1rem;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 0.875rem;
-    outline: none;
-    width: 100%;
-    transition: border-color 0.2s;
-    margin-bottom: 0.75rem;
-  }
-  .dataset-input:focus { border-color: var(--accent); }
-  .data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 0.82rem;
-  }
-  .data-table th {
-    padding: 0.65rem 1rem;
-    text-align: left;
-    font-family: var(--font-display);
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--text3);
-    border-bottom: 1px solid var(--border);
-  }
-  .data-table td {
-    padding: 0.75rem 1rem;
-    color: var(--text2);
-    border-bottom: 1px solid var(--border);
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-  }
-  .data-table tr:last-child td { border-bottom: none; }
+/* ── DATA COLLECTION ── */
+.data-view { max-width: 860px; }
+.data-top-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+.data-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem;
+}
+.data-card-title { font-family: var(--font-display); font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; color: var(--text2); }
+.data-value { font-family: var(--font-mono); font-size: 1.6rem; font-weight: 700; color: var(--text); }
+.data-sub { font-size: 0.72rem; color: var(--text3); margin-top: 0.25rem; }
 
-  /* ── ACHIEVEMENTS ── */
-  .badges-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 1rem;
-  }
-  .badge-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 1.5rem 1rem;
-    text-align: center;
-    transition: all 0.2s;
-  }
-  .badge-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-  .badge-card.earned { border-color: rgba(124,111,205,0.4); background: rgba(124,111,205,0.05); }
-  .badge-card.locked { opacity: 0.4; }
-  .badge-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
-  .badge-name {
-    font-family: var(--font-display);
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin-bottom: 0.3rem;
-  }
-  .badge-desc { font-size: 0.72rem; color: var(--text3); }
+.dataset-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+.dataset-form-row { display: grid; grid-template-columns: 1fr 220px; gap: 1rem; margin-bottom: 1rem; }
+.dataset-label { font-family: var(--font-display); font-size: 0.75rem; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 0.4rem; }
+.dataset-input {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 1rem;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+.dataset-input:focus { border-color: var(--accent); }
+.dataset-actions { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+.btn-add-entry {
+  background: linear-gradient(135deg, var(--green), #10b981);
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1.5rem;
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 4px 16px rgba(52,211,153,0.25);
+}
+.btn-add-entry:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(52,211,153,0.35); }
+.btn-export-csv {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 1.25rem;
+  color: var(--text2);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-export-csv:hover { border-color: var(--cyan); color: var(--cyan); }
+.btn-clear-data {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.7rem 1.25rem;
+  color: var(--text3);
+  font-family: var(--font-display);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-clear-data:hover { border-color: var(--red); color: var(--red); }
 
-  /* NOTIFICATIONS / TOAST */
-  .toast {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    background: var(--surface);
-    border: 1px solid var(--border2);
-    border-radius: 14px;
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
-    z-index: 999;
-    transform: translateY(100px);
-    opacity: 0;
-    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-    max-width: 340px;
-  }
-  .toast.show { transform: translateY(0); opacity: 1; }
-  .toast-icon { font-size: 1.5rem; }
-  .toast-content { flex: 1; }
-  .toast-title { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; }
-  .toast-sub { font-size: 0.78rem; color: var(--text2); margin-top: 0.15rem; }
+.data-table-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.data-table-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.data-table-title { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; }
+.data-filter {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.35rem 0.75rem;
+  color: var(--text2);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  outline: none;
+  width: 200px;
+}
+.data-filter:focus { border-color: var(--accent); }
+.data-table-wrap { overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.data-table th {
+  padding: 0.65rem 1.25rem;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text3);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 0.85rem 1.25rem;
+  color: var(--text2);
+  border-bottom: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(255,255,255,0.02); }
+.data-table td:nth-child(2) { max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--font-body); font-size: 0.82rem; }
+.label-pill {
+  background: var(--glow);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.72rem;
+  color: var(--accent3);
+  white-space: nowrap;
+}
+.btn-delete-row {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--text3);
+  font-size: 0.8rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  transition: all 0.15s;
+}
+.btn-delete-row:hover { color: var(--red); background: rgba(248,113,113,0.1); }
 
-  /* MOBILE */
-  .hamburger {
-    display: none;
-    position: fixed;
-    top: 1rem; left: 1rem;
-    z-index: 200;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 0.5rem 0.75rem;
-    cursor: pointer;
-    font-size: 1.1rem;
-    color: var(--text);
-  }
-  .sidebar-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.6);
-    z-index: 99;
-  }
+/* ── ACHIEVEMENTS ── */
+.achievements-layout { max-width: 900px; }
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 1rem;
+}
+.badge-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1.5rem 1rem;
+  text-align: center;
+  transition: all 0.2s;
+}
+.badge-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+.badge-card.earned { border-color: rgba(124,111,205,0.4); background: rgba(124,111,205,0.05); }
+.badge-card.locked { opacity: 0.35; filter: grayscale(0.5); }
+.badge-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.badge-name { font-family: var(--font-display); font-size: 0.875rem; font-weight: 600; margin-bottom: 0.3rem; }
+.badge-desc { font-size: 0.72rem; color: var(--text3); }
+.badge-earned-label { font-size: 0.65rem; color: var(--green); font-family: var(--font-mono); margin-top: 0.5rem; }
 
-  @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
-    .sidebar-overlay.show { display: block; }
-    .main-content { margin-left: 0; }
-    .hamburger { display: flex; }
-    .topbar { padding: 1rem 1rem 1rem 3.5rem; }
-    .page-content { padding: 1rem; }
-    .sandbox-layout { grid-template-columns: 1fr; height: auto; }
-    .data-cards { grid-template-columns: 1fr; }
-  }
+/* ── LEADERBOARD ── */
+.leaderboard-layout { max-width: 680px; }
+.leaderboard-table { width: 100%; display: flex; flex-direction: column; gap: 0.6rem; }
+.lb-entry {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 0.9rem 1.25rem;
+  transition: border-color 0.15s;
+}
+.lb-entry.me { border-color: var(--accent); background: rgba(124,111,205,0.05); }
+.lb-rank {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text3);
+  width: 32px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.lb-rank.gold { color: var(--yellow); }
+.lb-rank.silver { color: #CBD5E1; }
+.lb-rank.bronze { color: var(--orange); }
+.lb-name { flex: 1; font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; }
+.lb-me-badge { font-size: 0.65rem; background: var(--glow); border: 1px solid var(--border); border-radius: 6px; padding: 0.1rem 0.4rem; color: var(--accent3); font-family: var(--font-mono); }
+.lb-xp { font-family: var(--font-mono); font-size: 0.82rem; color: var(--accent2); }
+.lb-loading { padding: 3rem; text-align: center; color: var(--text3); font-family: var(--font-display); }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 14px;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  z-index: 999;
+  transform: translateY(120px);
+  opacity: 0;
+  transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-width: 360px;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast-icon { font-size: 1.5rem; }
+.toast-content { flex: 1; }
+.toast-title { font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; }
+.toast-sub { font-size: 0.78rem; color: var(--text2); margin-top: 0.15rem; }
+
+/* HAMBURGER + MOBILE */
+.hamburger {
+  display: none;
+  position: fixed;
+  top: 1rem; left: 1rem;
+  z-index: 200;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: var(--text);
+}
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 99;
+  backdrop-filter: blur(4px);
+}
+
+@media (max-width: 900px) {
+  .sandbox-layout { grid-template-columns: 1fr; height: auto; }
+  .sandbox-panel { min-height: 300px; }
+  .code-editor { min-height: 280px; }
+}
+@media (max-width: 768px) {
+  .sidebar { transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); box-shadow: 20px 0 60px rgba(0,0,0,0.5); }
+  .sidebar-overlay.show { display: block; }
+  .main-content { margin-left: 0; }
+  .hamburger { display: flex; }
+  .topbar { padding: 1rem 1rem 1rem 4rem; }
+  .page-content { padding: 1rem; }
+  .stats-grid { grid-template-columns: 1fr 1fr; }
+  .tracks-grid { grid-template-columns: 1fr; }
+  .dataset-form-row { grid-template-columns: 1fr; }
+  .data-top-cards { grid-template-columns: 1fr 1fr; }
+  .badges-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+@media (max-width: 480px) {
+  .stats-grid { grid-template-columns: 1fr; }
+  .data-top-cards { grid-template-columns: 1fr; }
+  .landing-stats { gap: 1.25rem; }
+}
 </style>
 </head>
 <body>
@@ -1090,11 +1159,10 @@
 
     <div class="auth-card">
       <div class="auth-tabs">
-        <button class="auth-tab active" onclick="switchTab('signin')">Sign In</button>
-        <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+        <button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
+        <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
       </div>
 
-      <!-- SIGN IN -->
       <div id="form-signin" class="auth-form">
         <div class="field-group">
           <label class="field-label">Username</label>
@@ -1102,17 +1170,16 @@
         </div>
         <div class="field-group">
           <label class="field-label">Password</label>
-          <input class="field-input" id="signin-password" type="password" placeholder="••••••••">
+          <input class="field-input" id="signin-password" type="password" placeholder="••••••••" autocomplete="current-password">
         </div>
-        <button class="btn-primary" onclick="signIn()">Sign In →</button>
+        <button class="btn-primary" id="btn-signin" onclick="signIn()">Sign In →</button>
         <p class="auth-msg" id="signin-msg"></p>
       </div>
 
-      <!-- SIGN UP -->
       <div id="form-signup" class="auth-form" style="display:none">
         <div class="field-group">
           <label class="field-label">Username</label>
-          <input class="field-input" id="signup-username" type="text" placeholder="choose a username" autocomplete="username">
+          <input class="field-input" id="signup-username" type="text" placeholder="choose_a_username" autocomplete="username">
         </div>
         <div class="field-group">
           <label class="field-label">Display Name</label>
@@ -1120,16 +1187,17 @@
         </div>
         <div class="field-group">
           <label class="field-label">Password</label>
-          <input class="field-input" id="signup-password" type="password" placeholder="min 6 characters">
+          <input class="field-input" id="signup-password" type="password" placeholder="min 6 characters" autocomplete="new-password">
         </div>
-        <button class="btn-primary" onclick="signUp()">Create Account →</button>
+        <button class="btn-primary" id="btn-signup" onclick="signUp()">Create Account →</button>
         <p class="auth-msg" id="signup-msg"></p>
       </div>
     </div>
 
     <div class="landing-stats">
       <div class="stat-item"><div class="stat-num">4</div><div class="stat-label">Learning Tracks</div></div>
-      <div class="stat-item"><div class="stat-num">20+</div><div class="stat-label">Lessons</div></div>
+      <div class="stat-item"><div class="stat-num">20</div><div class="stat-label">Lessons</div></div>
+      <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">Badges to Earn</div></div>
       <div class="stat-item"><div class="stat-num">∞</div><div class="stat-label">Prompt Lab</div></div>
     </div>
   </div>
@@ -1152,33 +1220,39 @@
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
-      <div class="nav-item active" onclick="showView('dashboard')">
+      <div class="nav-item active" data-view="dashboard" onclick="showView('dashboard')">
         <span class="nav-icon">⬡</span> Dashboard
       </div>
-      <div class="nav-item" onclick="showView('achievements')">
+      <div class="nav-item" data-view="achievements" onclick="showView('achievements')">
         <span class="nav-icon">🏆</span> Achievements
+      </div>
+      <div class="nav-item" data-view="leaderboard" onclick="showView('leaderboard')">
+        <span class="nav-icon">📈</span> Leaderboard
       </div>
 
       <div class="nav-section-label">Learn</div>
-      <div class="nav-item" onclick="showView('track-build')">
+      <div class="nav-item" data-view="track-build" onclick="showView('track-build')">
         <span class="nav-icon">🔨</span> Build AI
       </div>
-      <div class="nav-item" onclick="showView('track-code')">
+      <div class="nav-item" data-view="track-code" onclick="showView('track-code')">
         <span class="nav-icon">💻</span> Code AI
       </div>
-      <div class="nav-item" onclick="showView('track-data')">
+      <div class="nav-item" data-view="track-data" onclick="showView('track-data')">
         <span class="nav-icon">📊</span> Collect Data
       </div>
-      <div class="nav-item" onclick="showView('track-prompt')">
+      <div class="nav-item" data-view="track-prompt" onclick="showView('track-prompt')">
         <span class="nav-icon">✨</span> Prompt AI
       </div>
 
       <div class="nav-section-label">Tools</div>
-      <div class="nav-item" onclick="showView('sandbox')">
+      <div class="nav-item" data-view="sandbox" onclick="showView('sandbox')">
         <span class="nav-icon">⚗️</span> Code Sandbox
       </div>
-      <div class="nav-item" onclick="showView('promptlab')">
+      <div class="nav-item" data-view="promptlab" onclick="showView('promptlab')">
         <span class="nav-icon">🧪</span> Prompt Lab
+      </div>
+      <div class="nav-item" data-view="datatool" onclick="showView('datatool')">
+        <span class="nav-icon">🗃️</span> Dataset Collector
       </div>
     </nav>
     <div class="sidebar-bottom">
@@ -1189,8 +1263,9 @@
   <div class="main-content">
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Dashboard</div>
-      <div class="topbar-xp">
-        <span class="xp-pill" id="topbar-xp">0 XP</span>
+      <div class="topbar-right">
+        <div class="streak-pill" id="topbar-streak">🔥 0 day</div>
+        <div class="xp-pill" id="topbar-xp">⚡ 0 XP</div>
       </div>
     </div>
 
@@ -1306,7 +1381,7 @@
 
       <!-- SANDBOX -->
       <div class="view" id="view-sandbox">
-        <div class="section-heading">⚗️ Code Sandbox — Write & run Python-like AI code</div>
+        <div class="section-heading">⚗️ Code Sandbox</div>
         <div class="sandbox-layout">
           <div class="sandbox-panel">
             <div class="panel-header">
@@ -1314,40 +1389,50 @@
                 <span class="dot dot-red"></span>
                 <span class="dot dot-yellow"></span>
                 <span class="dot dot-green"></span>
-                &nbsp; ai_sandbox.py
+                &nbsp;ai_sandbox.py
               </div>
               <button class="btn-run" onclick="runCode()">▶ Run</button>
             </div>
             <textarea class="code-editor" id="code-editor" spellcheck="false"># AILearn Code Sandbox
-# Write Python-style AI code and run it!
+# Write Python-style AI code and experiment!
 
 import numpy as np
 
-# Simple neural network forward pass
+# ─── Simple Neural Network Forward Pass ───────────
 def sigmoid(x):
     return 1 / (1 + np.exp(-x))
 
-# Define a simple 2-layer network
+def relu(x):
+    return max(0, x)
+
 def neural_net(inputs, weights1, weights2):
-    hidden = sigmoid(np.dot(inputs, weights1))
-    output = sigmoid(np.dot(hidden, weights2))
+    hidden = [sigmoid(sum(inputs[j] * weights1[j][i]
+              for j in range(len(inputs))))
+              for i in range(len(weights1[0]))]
+    output = sigmoid(sum(hidden[i] * weights2[i]
+              for i in range(len(hidden))))
     return output
 
-# Sample data
-X = np.array([0.5, 0.8, 0.2])
-W1 = np.random.randn(3, 4)
-W2 = np.random.randn(4, 1)
+# ─── Sample inference ─────────────────────────────
+inputs  = [0.5, 0.8, 0.2]
+weights1 = [[0.1, 0.4, -0.2, 0.3],
+            [0.2, -0.1, 0.5, 0.1],
+            [-0.3, 0.2, 0.1, 0.4]]
+weights2 = [0.3, -0.2, 0.5, 0.1]
 
-result = neural_net(X, W1, W2)
-print(f"Neural network output: {result[0]:.4f}")
-print("🎉 Sandbox is working!")</textarea>
+result = neural_net(inputs, weights1, weights2)
+print(f"Neural network output: {result:.4f}")
+print("Confidence: " + ("HIGH" if result > 0.5 else "LOW"))
+print()
+print("Sandbox ready — try editing the weights!")
+</textarea>
           </div>
           <div class="sandbox-panel">
             <div class="panel-header">
               <div class="panel-title">📟 Output</div>
+              <button class="btn-clear-output" onclick="clearOutput()">Clear</button>
             </div>
             <div class="code-output" id="code-output">// Click ▶ Run to execute your code
-
 </div>
           </div>
         </div>
@@ -1356,70 +1441,91 @@ print("🎉 Sandbox is working!")</textarea>
       <!-- PROMPT LAB -->
       <div class="view" id="view-promptlab">
         <div class="prompt-lab-layout">
-          <div class="section-heading">🧪 Prompt Lab — Practice prompt engineering</div>
+          <div class="section-heading">🧪 Prompt Lab — Practice with real AI</div>
           <div class="prompt-area">
             <div class="prompt-input-wrap">
-              <textarea class="prompt-textarea" id="prompt-input" placeholder="Enter your prompt here... Try: 'Explain how neural networks learn in 3 bullet points'" rows="5"></textarea>
+              <textarea class="prompt-textarea" id="prompt-input" placeholder="Enter your prompt here…  Try: 'Explain how neural networks learn in 3 bullet points'" rows="5"></textarea>
             </div>
             <div class="prompt-footer">
-              <span class="prompt-tip">Model: claude-sonnet-4-6</span>
-              <button class="btn-send" onclick="sendPrompt()">Send Prompt →</button>
+              <span class="prompt-tip">Model: claude-sonnet-4-6 · AI tutor mode</span>
+              <button class="btn-send" id="btn-send-prompt" onclick="sendPrompt()">Send →</button>
             </div>
           </div>
           <div class="prompt-response" id="prompt-response"></div>
+          <div id="prompt-history-container"></div>
           <div class="prompt-examples">
-            <div class="examples-title">Example prompts to try:</div>
+            <div class="examples-title">💡 Example prompts to try:</div>
             <div class="example-chips">
               <div class="example-chip" onclick="fillPrompt(this)">Explain backpropagation simply</div>
-              <div class="example-chip" onclick="fillPrompt(this)">Write Python code to load a CSV dataset</div>
+              <div class="example-chip" onclick="fillPrompt(this)">Write Python to load a CSV dataset</div>
               <div class="example-chip" onclick="fillPrompt(this)">What makes a good training dataset?</div>
               <div class="example-chip" onclick="fillPrompt(this)">How do I fine-tune a language model?</div>
               <div class="example-chip" onclick="fillPrompt(this)">Compare supervised vs unsupervised learning</div>
               <div class="example-chip" onclick="fillPrompt(this)">Write a prompt to summarize articles accurately</div>
               <div class="example-chip" onclick="fillPrompt(this)">What is temperature in AI generation?</div>
+              <div class="example-chip" onclick="fillPrompt(this)">How does attention work in transformers?</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- DATA COLLECTION TOOL -->
-      <div class="view" id="view-data-tool">
+      <!-- DATASET COLLECTOR -->
+      <div class="view" id="view-datatool">
         <div class="data-view">
-          <div class="section-heading">📊 Your Dataset Collector</div>
-          <div class="data-cards">
+          <div class="section-heading">🗃️ Dataset Collector</div>
+          <div class="data-top-cards">
             <div class="data-card">
               <div class="data-card-title">Total Entries</div>
               <div class="data-value" id="data-count">0</div>
               <div class="data-sub">Data points collected</div>
             </div>
             <div class="data-card">
-              <div class="data-card-title">Labels Used</div>
+              <div class="data-card-title">Unique Labels</div>
               <div class="data-value" id="data-labels">0</div>
-              <div class="data-sub">Unique categories</div>
+              <div class="data-sub">Categories used</div>
+            </div>
+            <div class="data-card">
+              <div class="data-card-title">Most Common</div>
+              <div class="data-value" id="data-top-label" style="font-size:1rem;padding-top:0.25rem">—</div>
+              <div class="data-sub">Top label</div>
             </div>
           </div>
-          <div class="dataset-entry">
-            <div class="dataset-label">TEXT INPUT</div>
-            <input class="dataset-input" id="data-text" type="text" placeholder="Enter a sentence, review, or piece of text...">
-            <div class="dataset-label">LABEL / CATEGORY</div>
-            <input class="dataset-input" id="data-label" type="text" placeholder="e.g. positive, negative, neutral, spam...">
-            <button class="btn-primary" style="max-width:200px" onclick="addDataEntry()">Add Entry +</button>
+
+          <div class="dataset-form-card">
+            <div class="dataset-form-row">
+              <div>
+                <div class="dataset-label">Text / Input</div>
+                <input class="dataset-input" id="data-text" type="text" placeholder="Enter a sentence, review, or piece of text…" onkeydown="if(event.key==='Enter')addDataEntry()">
+              </div>
+              <div>
+                <div class="dataset-label">Label / Category</div>
+                <input class="dataset-input" id="data-label-input" type="text" placeholder="positive, spam, cat…" onkeydown="if(event.key==='Enter')addDataEntry()">
+              </div>
+            </div>
+            <div class="dataset-actions">
+              <button class="btn-add-entry" onclick="addDataEntry()">+ Add Entry</button>
+              <button class="btn-export-csv" onclick="exportCSV()">⬇ Export CSV</button>
+              <button class="btn-clear-data" onclick="clearData()">🗑 Clear All</button>
+            </div>
           </div>
-          <div class="dataset-entry">
-            <div class="dataset-label">COLLECTED DATA</div>
-            <div style="overflow-x:auto">
+
+          <div class="data-table-card">
+            <div class="data-table-header">
+              <div class="data-table-title">Collected Dataset</div>
+              <input class="data-filter" id="data-filter" type="text" placeholder="Filter by text or label…" oninput="renderDataTable()">
+            </div>
+            <div class="data-table-wrap">
               <table class="data-table">
                 <thead>
                   <tr>
                     <th>#</th>
                     <th>Text</th>
                     <th>Label</th>
-                    <th>Timestamp</th>
+                    <th>Time</th>
+                    <th></th>
                   </tr>
                 </thead>
-                <tbody id="data-tbody">
-                  <tr><td colspan="4" style="text-align:center;color:var(--text3);padding:2rem">No data yet. Add entries above.</td></tr>
-                </tbody>
+                <tbody id="data-tbody"></tbody>
               </table>
             </div>
           </div>
@@ -1428,8 +1534,20 @@ print("🎉 Sandbox is working!")</textarea>
 
       <!-- ACHIEVEMENTS -->
       <div class="view" id="view-achievements">
-        <div class="section-heading">🏆 Achievements & Badges</div>
-        <div class="badges-grid" id="badges-grid"></div>
+        <div class="achievements-layout">
+          <div class="section-heading">🏆 Achievements & Badges</div>
+          <div class="badges-grid" id="badges-grid"></div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD -->
+      <div class="view" id="view-leaderboard">
+        <div class="leaderboard-layout">
+          <div class="section-heading">📈 Global Leaderboard</div>
+          <div id="leaderboard-container" class="leaderboard-table">
+            <div class="lb-loading">Loading scores…</div>
+          </div>
+        </div>
       </div>
 
     </div><!-- /page-content -->
@@ -1446,94 +1564,61 @@ print("🎉 Sandbox is working!")</textarea>
 </div>
 
 <script>
-// ════════════════════════════════════════
-// FIREBASE CONFIG
-// ════════════════════════════════════════
-const firebaseConfig = {
-  databaseURL: "https://ailearndef-default-rtdb.firebaseio.com/"
-};
+// ════════════════════════════════════════════════
+// FIREBASE
+// ════════════════════════════════════════════════
+const firebaseConfig = { databaseURL: "https://ailearndef-default-rtdb.firebaseio.com/" };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// ════════════════════════════════════════
-// CURRICULUM DATA
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
+// CURRICULUM
+// ════════════════════════════════════════════════
 const CURRICULUM = {
   build: [
-    {
-      id: 'build-1', title: 'What Is Artificial Intelligence?', xp: 50,
-      desc: 'Foundations and history',
-      content: {
-        text: `<h3>What Is Artificial Intelligence?</h3>
+    { id:'build-1', title:'What Is Artificial Intelligence?', xp:50, desc:'Foundations and history',
+      content: { text:`<h3>What Is Artificial Intelligence?</h3>
 <p>Artificial Intelligence (AI) refers to machines performing tasks that typically require human intelligence — things like recognizing images, understanding language, making decisions, or translating text.</p>
-<p>AI has existed in various forms since the 1950s. Alan Turing famously asked "Can machines think?" in 1950, proposing the Turing Test as a benchmark. But the field has exploded in the last decade, driven by three things: <strong>data</strong>, <strong>compute power</strong>, and <strong>better algorithms</strong>.</p>
+<p>AI has existed in various forms since the 1950s. Alan Turing famously asked "Can machines think?" in 1950, proposing the Turing Test as a benchmark. The field exploded in the last decade, driven by three things: <strong>data</strong>, <strong>compute power</strong>, and <strong>better algorithms</strong>.</p>
 <h3>Three Paradigms of AI</h3>
 <p><strong>Rule-Based AI (Expert Systems):</strong> Early AI was hand-coded rules. "If temperature > 100°C, alert." Works well for narrow problems, breaks for complex ones.</p>
 <p><strong>Machine Learning:</strong> Instead of hard-coding rules, we feed the machine data and let it learn patterns. The machine discovers rules on its own.</p>
 <p><strong>Deep Learning:</strong> A subset of ML using neural networks with many layers. Powers modern image recognition, language models, and more.</p>`,
-        quiz: {
-          q: 'What three factors drove the modern AI explosion?',
-          options: ['Speed, memory, and hardware', 'Data, compute power, and better algorithms', 'Robots, sensors, and cameras', 'Python, Java, and C++'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'build-2', title: 'Neural Networks Explained', xp: 75,
-      desc: 'Neurons, layers, and connections',
-      content: {
-        text: `<h3>Neural Networks: The Brain of Modern AI</h3>
+        quiz: { q:'What three factors drove the modern AI explosion?', options:['Speed, memory, and hardware','Data, compute power, and better algorithms','Robots, sensors, and cameras','Python, Java, and C++'], answer:1 } } },
+    { id:'build-2', title:'Neural Networks Explained', xp:75, desc:'Neurons, layers, and connections',
+      content: { text:`<h3>Neural Networks: The Brain of Modern AI</h3>
 <p>A neural network is inspired by the human brain — layers of interconnected "neurons" that transform input data into useful outputs.</p>
 <p>Every neural network has three core components: an <strong>input layer</strong> (receives raw data), <strong>hidden layers</strong> (extract patterns), and an <strong>output layer</strong> (produces predictions).</p>
 <h3>How a Neuron Works</h3>
 <p>Each neuron takes inputs, multiplies them by <strong>weights</strong>, adds a <strong>bias</strong>, and passes the result through an <strong>activation function</strong>. The activation function decides whether to "fire" the neuron — introducing non-linearity that lets the network learn complex patterns.</p>
 <div class="code-block"><span class="comment"># A single neuron in Python</span>
 def neuron(inputs, weights, bias):
-    z = sum(w * x <span class="keyword">for</span> w, x <span class="keyword">in</span> zip(weights, inputs)) + bias
-    <span class="keyword">return</span> relu(z)  <span class="comment"># activation function
+    z = sum(w * x for w, x in zip(weights, inputs)) + bias
+    return relu(z)  <span class="comment"># activation function</span>
 
-</span>def relu(z):
-    <span class="keyword">return</span> max(0, z)</div>
-<p>Stack thousands of these neurons in layers, and you get a deep neural network capable of learning almost anything from data.</p>`,
-        quiz: {
-          q: 'What does the activation function do in a neuron?',
-          options: ['Stores data permanently', 'Introduces non-linearity so networks learn complex patterns', 'Speeds up computation', 'Reduces the number of layers needed'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'build-3', title: 'Training: How AI Learns', xp: 75,
-      desc: 'Loss, backpropagation & gradient descent',
-      content: {
-        text: `<h3>How Does AI Actually Learn?</h3>
+def relu(z):
+    return max(0, z)</div>
+<p>Stack thousands of these neurons across layers, and you get a deep neural network capable of learning almost anything from data.</p>`,
+        quiz: { q:'What does the activation function do in a neuron?', options:['Stores data permanently','Introduces non-linearity so networks learn complex patterns','Speeds up computation','Reduces the number of layers needed'], answer:1 } } },
+    { id:'build-3', title:'Training: How AI Learns', xp:75, desc:'Loss, backpropagation & gradient descent',
+      content: { text:`<h3>How Does AI Actually Learn?</h3>
 <p>Training an AI model is a cycle: make a prediction, measure how wrong it was, adjust the weights, repeat millions of times.</p>
 <h3>The Loss Function</h3>
-<p>A <strong>loss function</strong> measures how wrong the model's predictions are. Lower loss = better predictions. The most common is <strong>Mean Squared Error (MSE)</strong> for regression, and <strong>Cross-Entropy</strong> for classification.</p>
+<p>A <strong>loss function</strong> measures how wrong the model's predictions are. Lower loss = better predictions. The most common are <strong>Mean Squared Error (MSE)</strong> for regression, and <strong>Cross-Entropy</strong> for classification.</p>
 <h3>Gradient Descent</h3>
 <p>To minimize loss, we use <strong>gradient descent</strong> — computing which direction to nudge each weight to reduce the error. The "gradient" tells us the slope, and we step in the downhill direction.</p>
 <div class="code-block"><span class="comment"># Gradient descent update rule</span>
 weight = weight - learning_rate * gradient
 
-<span class="comment"># Learning rate controls step size
-# Too high: overshoots; Too low: slow</span></div>
+<span class="comment"># Too high: overshoots. Too low: slow convergence.</span></div>
 <h3>Backpropagation</h3>
-<p>Backpropagation is the algorithm that computes gradients efficiently across all layers simultaneously using the chain rule of calculus. Without it, training deep networks would be impossibly slow.</p>`,
-        quiz: {
-          q: 'What is the purpose of the loss function in training?',
-          options: ['To store model weights', 'To measure how wrong the model\'s predictions are', 'To speed up inference', 'To compress the model'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'build-4', title: 'Model Architecture Types', xp: 100,
-      desc: 'CNNs, RNNs, Transformers',
-      content: {
-        text: `<h3>The Zoo of Model Architectures</h3>
+<p>Backpropagation computes gradients efficiently across all layers simultaneously using the chain rule of calculus. Without it, training deep networks would be impossibly slow.</p>`,
+        quiz: { q:'What is the purpose of the loss function in training?', options:['To store model weights','To measure how wrong the model\'s predictions are','To speed up inference','To compress the model'], answer:1 } } },
+    { id:'build-4', title:'Model Architecture Types', xp:100, desc:'CNNs, RNNs, Transformers',
+      content: { text:`<h3>The Zoo of Model Architectures</h3>
 <p>Different problems call for different architectures. Here are the three most important families in modern AI:</p>
 <h3>CNNs — Convolutional Neural Networks</h3>
-<p>Built for <strong>images</strong>. Convolutional layers slide a filter across the image, detecting edges, textures, and then complex objects. Powers image classification, object detection, and medical imaging.</p>
+<p>Built for <strong>images</strong>. Convolutional layers slide a filter across the image, detecting edges, textures, then complex objects. Powers image classification, object detection, and medical imaging.</p>
 <h3>RNNs — Recurrent Neural Networks</h3>
 <p>Built for <strong>sequences</strong> — text, audio, time series. They maintain a hidden state that "remembers" previous inputs. LSTMs (Long Short-Term Memory) solved the vanishing gradient problem that plagued early RNNs.</p>
 <h3>Transformers</h3>
@@ -1543,25 +1628,16 @@ weight = weight - learning_rate * gradient
 <span class="comment"># Sequences    → RNN / LSTM (time series)</span>
 <span class="comment"># Language     → Transformer (BERT, GPT)</span>
 <span class="comment"># Vision+Lang  → Vision Transformer (ViT)</span></div>`,
-        quiz: {
-          q: 'Which architecture powers modern large language models like GPT and Claude?',
-          options: ['CNN', 'RNN', 'Transformer', 'Decision Tree'],
-          answer: 2
-        }
-      }
-    },
-    {
-      id: 'build-5', title: 'From Training to Deployment', xp: 100,
-      desc: 'APIs, inference & model serving',
-      content: {
-        text: `<h3>Getting Your Model Into the World</h3>
-<p>Training a model is step one. Deploying it so real users can benefit is the finish line. Here's the pipeline:</p>
+        quiz: { q:'Which architecture powers modern LLMs like GPT and Claude?', options:['CNN','RNN','Transformer','Decision Tree'], answer:2 } } },
+    { id:'build-5', title:'From Training to Deployment', xp:100, desc:'APIs, inference & model serving',
+      content: { text:`<h3>Getting Your Model Into the World</h3>
+<p>Training a model is step one. Deploying it so real users can benefit is the finish line.</p>
 <h3>Model Evaluation</h3>
 <p>Before deploying, evaluate on a held-out <strong>test set</strong>. Key metrics: <strong>accuracy</strong> for classification, <strong>F1 score</strong> for imbalanced data, <strong>BLEU</strong> for text generation, <strong>RMSE</strong> for regression.</p>
 <h3>Model Export</h3>
 <p>Save weights in a portable format: <code>model.save('model.h5')</code> for Keras, <code>torch.save(model.state_dict())</code> for PyTorch, or export to <strong>ONNX</strong> for cross-framework compatibility.</p>
 <h3>Serving via API</h3>
-<p>Wrap your model in a REST API (FastAPI, Flask) so applications can call it. The client sends data, your model runs inference, returns predictions. Cloud platforms like AWS SageMaker, GCP Vertex AI, and Azure ML automate this.</p>
+<p>Wrap your model in a REST API (FastAPI, Flask) so applications can call it. Cloud platforms like AWS SageMaker, GCP Vertex AI, and Azure ML automate this at scale.</p>
 <div class="code-block"><span class="comment"># Simple FastAPI model server</span>
 <span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
 app = FastAPI()
@@ -1570,28 +1646,19 @@ app = FastAPI()
 <span class="keyword">async def</span> predict(data: dict):
     result = model.predict([data[<span class="string">"input"</span>]])
     <span class="keyword">return</span> {<span class="string">"prediction"</span>: result[0]}</div>`,
-        quiz: {
-          q: 'What format enables cross-framework model compatibility for deployment?',
-          options: ['JSON', 'ONNX', 'CSV', 'XML'],
-          answer: 1
-        }
-      }
-    }
+        quiz: { q:'What format enables cross-framework model compatibility for deployment?', options:['JSON','ONNX','CSV','XML'], answer:1 } } }
   ],
   code: [
-    {
-      id: 'code-1', title: 'Python for AI: The Basics', xp: 50,
-      desc: 'NumPy, arrays, and math',
-      content: {
-        text: `<h3>Python: The Language of AI</h3>
+    { id:'code-1', title:'Python for AI: The Basics', xp:50, desc:'NumPy, arrays, and math',
+      content: { text:`<h3>Python: The Language of AI</h3>
 <p>Python dominates AI because of its clean syntax, massive ecosystem of libraries, and excellent tooling. Before deep learning, you need to be comfortable with NumPy.</p>
 <h3>NumPy Arrays</h3>
-<p>NumPy arrays are the backbone of AI data representation. They're faster than Python lists and support vectorized math — computing across entire arrays at once.</p>
+<p>NumPy arrays are the backbone of AI data representation. They're faster than Python lists and support vectorized math — computing across entire arrays at once without explicit loops.</p>
 <div class="code-block"><span class="keyword">import</span> numpy <span class="keyword">as</span> np
 
 <span class="comment"># Create arrays</span>
 a = np.array([1, 2, 3, 4, 5])
-matrix = np.zeros((3, 3))     <span class="comment"># 3x3 zeros</span>
+matrix = np.zeros((3, 3))     <span class="comment"># 3×3 zeros</span>
 rand = np.random.randn(100)   <span class="comment"># 100 random values</span>
 
 <span class="comment"># Vectorized operations — no loops needed</span>
@@ -1599,68 +1666,44 @@ b = a * 2          <span class="comment"># [2, 4, 6, 8, 10]</span>
 c = np.dot(a, a)   <span class="comment"># dot product = 55</span>
 mean = np.mean(a)  <span class="comment"># average = 3.0</span></div>
 <p>Master NumPy and the rest of the AI stack (TensorFlow, PyTorch, scikit-learn) becomes significantly easier.</p>`,
-        quiz: {
-          q: 'Why is NumPy faster than Python lists for AI computation?',
-          options: ['It uses a newer version of Python', 'It supports vectorized math across entire arrays at once', 'It avoids using RAM', 'It runs on the GPU by default'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'code-2', title: 'Building Your First Model', xp: 75,
-      desc: 'scikit-learn & Linear Regression',
-      content: {
-        text: `<h3>Your First Machine Learning Model</h3>
+        quiz: { q:'Why is NumPy faster than Python lists for AI computation?', options:['It uses a newer version of Python','It supports vectorized math across entire arrays at once','It avoids using RAM','It runs on the GPU by default'], answer:1 } } },
+    { id:'code-2', title:'Building Your First Model', xp:75, desc:'scikit-learn & Linear Regression',
+      content: { text:`<h3>Your First Machine Learning Model</h3>
 <p>scikit-learn is the go-to library for classical ML in Python. Let's build a real model that predicts house prices from square footage.</p>
 <div class="code-block"><span class="keyword">from</span> sklearn.linear_model <span class="keyword">import</span> LinearRegression
 <span class="keyword">from</span> sklearn.model_selection <span class="keyword">import</span> train_test_split
 <span class="keyword">import</span> numpy <span class="keyword">as</span> np
 
 <span class="comment"># Generate synthetic housing data</span>
-sq_ft = np.array([800, 1000, 1200, 1500, 2000, 2500]).reshape(-1, 1)
+sq_ft = np.array([800,1000,1200,1500,2000,2500]).reshape(-1,1)
 price = np.array([120, 150, 175, 210, 280, 340])  <span class="comment"># $k</span>
 
-<span class="comment"># Split into train/test</span>
 X_train, X_test, y_train, y_test = train_test_split(
-    sq_ft, price, test_size=0.2, random_state=42
-)
+    sq_ft, price, test_size=0.2, random_state=42)
 
-<span class="comment"># Train the model</span>
 model = LinearRegression()
 model.fit(X_train, y_train)
 
-<span class="comment"># Predict</span>
 predicted = model.predict([[1800]])
 print(f<span class="string">"Predicted price: ${predicted[0]:.0f}k"</span>)</div>
-<p>That's a fully trained ML model in 15 lines. scikit-learn handles the math — gradient descent, matrix operations, all of it — behind a clean API.</p>`,
-        quiz: {
-          q: 'What does train_test_split do?',
-          options: ['Deletes some of your data', 'Divides data into training and evaluation sets', 'Makes your model faster', 'Normalizes your features'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'code-3', title: 'Deep Learning with PyTorch', xp: 100,
-      desc: 'Tensors, layers, and training loops',
-      content: {
-        text: `<h3>PyTorch: Research-Grade Deep Learning</h3>
+<p>That's a fully trained ML model in 15 lines. scikit-learn handles the math — gradient descent, matrix operations — behind a clean API.</p>`,
+        quiz: { q:'What does train_test_split do?', options:['Deletes some of your data','Divides data into training and evaluation sets','Makes your model faster','Normalizes your features'], answer:1 } } },
+    { id:'code-3', title:'Deep Learning with PyTorch', xp:100, desc:'Tensors, layers, and training loops',
+      content: { text:`<h3>PyTorch: Research-Grade Deep Learning</h3>
 <p>PyTorch is the leading framework for deep learning research and increasingly production. It uses dynamic computation graphs, making debugging natural.</p>
 <div class="code-block"><span class="keyword">import</span> torch
 <span class="keyword">import</span> torch.nn <span class="keyword">as</span> nn
 
-<span class="comment"># Define a neural network as a class</span>
 <span class="keyword">class</span> SimpleNet(nn.Module):
     <span class="keyword">def</span> __init__(self):
         super().__init__()
         self.layers = nn.Sequential(
-            nn.Linear(784, 256),   <span class="comment"># input → hidden</span>
+            nn.Linear(784, 256),
             nn.ReLU(),
-            nn.Linear(256, 128),   <span class="comment"># hidden → hidden</span>
+            nn.Linear(256, 128),
             nn.ReLU(),
-            nn.Linear(128, 10)     <span class="comment"># hidden → output (10 classes)</span>
+            nn.Linear(128, 10)
         )
-    
     <span class="keyword">def</span> forward(self, x):
         <span class="keyword">return</span> self.layers(x)
 
@@ -1668,121 +1711,77 @@ model = SimpleNet()
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 criterion = nn.CrossEntropyLoss()
 
-<span class="comment"># Training loop</span>
 <span class="keyword">for</span> epoch <span class="keyword">in</span> range(10):
     pred = model(X_batch)
     loss = criterion(pred, y_batch)
-    optimizer.zero_grad()
-    loss.backward()
-    optimizer.step()</div>`,
-        quiz: {
-          q: 'What does optimizer.zero_grad() do in the training loop?',
-          options: ['Resets the model weights', 'Clears accumulated gradients from the last step', 'Stops training', 'Evaluates the model'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'code-4', title: 'Working with the OpenAI API', xp: 100,
-      desc: 'Calling LLMs from Python code',
-      content: {
-        text: `<h3>Building with Language Model APIs</h3>
+    optimizer.zero_grad()   <span class="comment"># clear old gradients</span>
+    loss.backward()         <span class="comment"># compute new gradients</span>
+    optimizer.step()        <span class="comment"># update weights</span></div>`,
+        quiz: { q:'What does optimizer.zero_grad() do in the training loop?', options:['Resets the model weights','Clears accumulated gradients from the last step','Stops training','Evaluates the model'], answer:1 } } },
+    { id:'code-4', title:'Working with the OpenAI API', xp:100, desc:'Calling LLMs from Python code',
+      content: { text:`<h3>Building with Language Model APIs</h3>
 <p>You don't always need to train your own model. Modern LLM APIs let you call powerful models like GPT-4 and Claude directly from Python.</p>
 <div class="code-block"><span class="keyword">from</span> openai <span class="keyword">import</span> OpenAI
 
 client = OpenAI(api_key=<span class="string">"your-api-key"</span>)
 
-<span class="comment"># Simple completion</span>
 response = client.chat.completions.create(
     model=<span class="string">"gpt-4o"</span>,
     messages=[
         {<span class="string">"role"</span>: <span class="string">"system"</span>, <span class="string">"content"</span>: <span class="string">"You are a helpful AI tutor."</span>},
-        {<span class="string">"role"</span>: <span class="string">"user"</span>: <span class="string">"Explain gradient descent simply."</span>}
+        {<span class="string">"role"</span>: <span class="string">"user"</span>,   <span class="string">"content"</span>: <span class="string">"Explain gradient descent simply."</span>}
     ],
-    temperature=0.7,   <span class="comment"># creativity level</span>
+    temperature=0.7,
     max_tokens=500
 )
 
 answer = response.choices[0].message.content
 print(answer)
 
-<span class="comment"># Pro tip: stream responses for better UX</span>
-stream = client.chat.completions.create(..., stream=True)
+<span class="comment"># Stream responses for better UX:</span>
+stream = client.chat.completions.create(..., stream=<span class="keyword">True</span>)
 <span class="keyword">for</span> chunk <span class="keyword">in</span> stream:
     print(chunk.choices[0].delta.content, end=<span class="string">""</span>)</div>`,
-        quiz: {
-          q: 'What does the "temperature" parameter control in LLM API calls?',
-          options: ['Server response time', 'The creativity/randomness of the output', 'The model\'s memory', 'The number of tokens per second'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'code-5', title: 'Building an AI Pipeline', xp: 125,
-      desc: 'End-to-end from data to prediction',
-      content: {
-        text: `<h3>The Complete AI Pipeline</h3>
-<p>A production AI pipeline chains together: data loading → preprocessing → model training → evaluation → serving. Here's the full picture:</p>
+        quiz: { q:'What does the "temperature" parameter control in LLM API calls?', options:['Server response time','The creativity/randomness of the output','The model\'s memory','Tokens per second'], answer:1 } } },
+    { id:'code-5', title:'Building an AI Pipeline', xp:125, desc:'End-to-end from data to prediction',
+      content: { text:`<h3>The Complete AI Pipeline</h3>
+<p>A production AI pipeline chains together: data loading → preprocessing → model training → evaluation → serving.</p>
 <div class="code-block"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
 <span class="keyword">from</span> sklearn.pipeline <span class="keyword">import</span> Pipeline
 <span class="keyword">from</span> sklearn.preprocessing <span class="keyword">import</span> StandardScaler
 <span class="keyword">from</span> sklearn.ensemble <span class="keyword">import</span> RandomForestClassifier
 <span class="keyword">from</span> sklearn.metrics <span class="keyword">import</span> classification_report
 
-<span class="comment"># 1. Load data</span>
 df = pd.read_csv(<span class="string">'dataset.csv'</span>)
 X, y = df.drop(<span class="string">'label'</span>, axis=1), df[<span class="string">'label'</span>]
 
-<span class="comment"># 2. Build sklearn Pipeline (auto preprocessing)</span>
 pipe = Pipeline([
     (<span class="string">'scaler'</span>, StandardScaler()),
-    (<span class="string">'model'</span>, RandomForestClassifier(n_estimators=100))
+    (<span class="string">'model'</span>,  RandomForestClassifier(n_estimators=100))
 ])
 
-<span class="comment"># 3. Train</span>
 pipe.fit(X_train, y_train)
-
-<span class="comment"># 4. Evaluate</span>
 preds = pipe.predict(X_test)
 print(classification_report(y_test, preds))
 
-<span class="comment"># 5. Save pipeline (includes scaler!)</span>
 <span class="keyword">import</span> joblib
 joblib.dump(pipe, <span class="string">'model_pipeline.pkl'</span>)</div>`,
-        quiz: {
-          q: 'Why is it better to use sklearn\'s Pipeline instead of applying preprocessing manually?',
-          options: ['It runs faster', 'It prevents data leakage and ensures consistent preprocessing at inference time', 'It uses less memory', 'Manual preprocessing is actually better'],
-          answer: 1
-        }
-      }
-    }
+        quiz: { q:'Why use sklearn\'s Pipeline instead of preprocessing manually?', options:['It runs faster','It prevents data leakage and ensures consistent preprocessing at inference time','It uses less memory','Manual preprocessing is better'], answer:1 } } }
   ],
   data: [
-    {
-      id: 'data-1', title: 'Why Data Is Everything', xp: 50,
-      desc: 'The fuel that powers AI',
-      content: {
-        text: `<h3>Garbage In, Garbage Out</h3>
+    { id:'data-1', title:'Why Data Is Everything', xp:50, desc:'The fuel that powers AI',
+      content: { text:`<h3>Garbage In, Garbage Out</h3>
 <p>In AI, data is not just important — it's everything. A mediocre model trained on excellent data will beat a state-of-the-art model trained on poor data, every single time.</p>
 <h3>What Makes Data Good?</h3>
 <p><strong>Volume:</strong> More data generally means better models. Language models like GPT-4 were trained on trillions of tokens.</p>
-<p><strong>Quality:</strong> Noisy, incorrect, or inconsistent labels will corrupt your model. Data cleaning is 70-80% of a real data scientist's work.</p>
-<p><strong>Diversity:</strong> If your training data only contains certain types of examples, your model will fail on edge cases it never saw.</p>
+<p><strong>Quality:</strong> Noisy, incorrect, or inconsistent labels corrupt your model. Data cleaning is 70–80% of a real data scientist's work.</p>
+<p><strong>Diversity:</strong> If training data only contains certain types of examples, your model will fail on edge cases it never saw.</p>
 <p><strong>Balance:</strong> Imbalanced classes (e.g. 99% negative, 1% positive) mislead models into predicting the majority class always.</p>
 <h3>Data Sources</h3>
 <p>Web scraping, APIs, user feedback loops, sensor networks, third-party datasets (Hugging Face Hub, Kaggle, UCI ML Repository), and synthetic data generation.</p>`,
-        quiz: {
-          q: 'What is "class imbalance" and why is it a problem?',
-          options: ['When classes have the same number of examples', 'When one class has far more examples than others, misleading the model', 'When data has too many features', 'When training takes too long'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'data-2', title: 'Data Collection Methods', xp: 75,
-      desc: 'Scraping, APIs, and surveys',
-      content: {
-        text: `<h3>Collecting Raw Data at Scale</h3>
+        quiz: { q:'What is "class imbalance" and why is it a problem?', options:['When classes have the same examples','When one class has far more examples than others, misleading the model','When data has too many features','When training takes too long'], answer:1 } } },
+    { id:'data-2', title:'Data Collection Methods', xp:75, desc:'Scraping, APIs, and surveys',
+      content: { text:`<h3>Collecting Raw Data at Scale</h3>
 <p>Before you can build a model, you need data. Here are the main collection strategies:</p>
 <h3>Web Scraping</h3>
 <p>Programmatically extract data from websites using tools like <strong>BeautifulSoup</strong> and <strong>Scrapy</strong>. Always respect robots.txt and terms of service.</p>
@@ -1797,55 +1796,38 @@ titles = [h2.text <span class="keyword">for</span> h2 <span class="keyword">in</
 <h3>Human Annotation</h3>
 <p>For labeled datasets (sentiment, object detection, Q&A), you often need human annotators. Platforms: Amazon Mechanical Turk, Scale AI, Labelbox.</p>
 <h3>Synthetic Data</h3>
-<p>Generate artificial data using models or simulators. Useful when real data is scarce or privacy-sensitive. Popular in autonomous driving and medical imaging.</p>`,
-        quiz: {
-          q: 'What should you always check before web scraping a website?',
-          options: ['The website\'s color scheme', 'robots.txt and terms of service', 'The server location', 'Whether it uses HTTPS'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'data-3', title: 'Cleaning & Preprocessing', xp: 75,
-      desc: 'Handling missing values and noise',
-      content: {
-        text: `<h3>The Real Work: Data Cleaning</h3>
+<p>Generate artificial data using models or simulators. Useful when real data is scarce or privacy-sensitive.</p>`,
+        quiz: { q:'What should you always check before web scraping a website?', options:['The website\'s color scheme','robots.txt and terms of service','The server location','Whether it uses HTTPS'], answer:1 } } },
+    { id:'data-3', title:'Cleaning & Preprocessing', xp:75, desc:'Handling missing values and noise',
+      content: { text:`<h3>The Real Work: Data Cleaning</h3>
 <p>Raw data is messy. Missing values, duplicates, outliers, inconsistent formats — cleaning is the unglamorous core of data science.</p>
 <div class="code-block"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
 
 df = pd.read_csv(<span class="string">'raw_data.csv'</span>)
 
-<span class="comment"># 1. Check for missing values</span>
+<span class="comment"># 1. Check missing values</span>
 print(df.isnull().sum())
 
 <span class="comment"># 2. Drop rows missing critical columns</span>
-df.dropna(subset=[<span class="string">'text'</span>, <span class="string">'label'</span>], inplace=True)
+df.dropna(subset=[<span class="string">'text'</span>, <span class="string">'label'</span>], inplace=<span class="keyword">True</span>)
 
 <span class="comment"># 3. Fill numeric NAs with median</span>
-df[<span class="string">'age'</span>].fillna(df[<span class="string">'age'</span>].median(), inplace=True)
+df[<span class="string">'age'</span>].fillna(df[<span class="string">'age'</span>].median(), inplace=<span class="keyword">True</span>)
 
 <span class="comment"># 4. Remove duplicates</span>
-df.drop_duplicates(inplace=True)
+df.drop_duplicates(inplace=<span class="keyword">True</span>)
 
 <span class="comment"># 5. Normalize text</span>
 df[<span class="string">'text'</span>] = df[<span class="string">'text'</span>].str.lower().str.strip()
 
 <span class="comment"># 6. Remove outliers (IQR method)</span>
 Q1, Q3 = df[<span class="string">'value'</span>].quantile([0.25, 0.75])
-df = df[(df[<span class="string">'value'</span>] >= Q1 - 1.5*(Q3-Q1)) &
-        (df[<span class="string">'value'</span>] <= Q3 + 1.5*(Q3-Q1))]</div>`,
-        quiz: {
-          q: 'Why is removing duplicates important in training data?',
-          options: ['It makes files smaller', 'Duplicate examples over-represent certain patterns, biasing the model', 'It speeds up Python', 'Duplicates crash most ML libraries'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'data-4', title: 'Data Labeling & Annotation', xp: 100,
-      desc: 'Creating ground truth for supervised learning',
-      content: {
-        text: `<h3>The Art of Labeling</h3>
+IQR = Q3 - Q1
+df = df[(df[<span class="string">'value'</span>] >= Q1 - 1.5*IQR) &
+        (df[<span class="string">'value'</span>] <= Q3 + 1.5*IQR)]</div>`,
+        quiz: { q:'Why is removing duplicates important in training data?', options:['It makes files smaller','Duplicate examples over-represent certain patterns, biasing the model','It speeds up Python','Duplicates crash most ML libraries'], answer:1 } } },
+    { id:'data-4', title:'Data Labeling & Annotation', xp:100, desc:'Creating ground truth for supervised learning',
+      content: { text:`<h3>The Art of Labeling</h3>
 <p>Supervised learning requires labeled data — examples paired with correct answers. The quality of your labels directly determines the ceiling of your model's performance.</p>
 <h3>Label Types</h3>
 <p><strong>Classification:</strong> Text → "positive" / "negative" / "neutral". Image → "cat" / "dog" / "other".</p>
@@ -1856,46 +1838,28 @@ df = df[(df[<span class="string">'value'</span>] >= Q1 - 1.5*(Q3-Q1)) &
 <p>When multiple humans label the same data, they'll sometimes disagree. <strong>Cohen's Kappa</strong> measures agreement beyond chance. Low Kappa means your labeling guidelines are unclear — fix them before scaling.</p>
 <h3>Label Studio (Open Source)</h3>
 <p>Label Studio is a free, powerful annotation tool supporting text, images, audio, and video. You can self-host it and export to any ML format.</p>`,
-        quiz: {
-          q: 'What does a high Cohen\'s Kappa score indicate?',
-          options: ['The model is very accurate', 'Annotators are agreeing consistently on labels', 'The dataset is very large', 'Training is almost complete'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'data-5', title: 'Dataset Design & Splits', xp: 100,
-      desc: 'Train/val/test and avoiding leakage',
-      content: {
-        text: `<h3>The Golden Rule of Dataset Design</h3>
+        quiz: { q:'What does a high Cohen\'s Kappa score indicate?', options:['The model is very accurate','Annotators are agreeing consistently on labels','The dataset is very large','Training is almost complete'], answer:1 } } },
+    { id:'data-5', title:'Dataset Design & Splits', xp:100, desc:'Train/val/test and avoiding leakage',
+      content: { text:`<h3>The Golden Rule of Dataset Design</h3>
 <p>How you split and structure your data determines whether your model evaluations are trustworthy. Get this wrong and you'll deploy a model that fails in production.</p>
 <h3>The Three-Way Split</h3>
-<p><strong>Training set (70-80%):</strong> The model learns from this. All weight updates happen here.</p>
-<p><strong>Validation set (10-15%):</strong> Used to tune hyperparameters and monitor overfitting during training. The model never trains on this directly.</p>
-<p><strong>Test set (10-15%):</strong> Held completely untouched until final evaluation. Represents real-world performance.</p>
+<p><strong>Training set (70–80%):</strong> The model learns from this. All weight updates happen here.</p>
+<p><strong>Validation set (10–15%):</strong> Used to tune hyperparameters and monitor overfitting. The model never trains on this directly.</p>
+<p><strong>Test set (10–15%):</strong> Held completely untouched until final evaluation. Represents real-world performance.</p>
 <h3>Data Leakage — The Silent Killer</h3>
-<p>Leakage means information from the test set "leaks" into training, giving falsely optimistic results. Common causes: preprocessing on the full dataset before splitting, using future data to predict the past, or having duplicate entries spanning splits.</p>
+<p>Leakage means information from the test set "leaks" into training, giving falsely optimistic results. Common causes: preprocessing on the full dataset before splitting, using future data, or duplicates spanning splits.</p>
 <div class="code-block"><span class="comment"># WRONG: Fit scaler on all data (leaks test stats)</span>
-scaler.fit(X)  <span class="comment"># ❌</span>
+scaler.fit(X)           <span class="comment"># ❌</span>
 
 <span class="comment"># CORRECT: Fit only on training data</span>
 scaler.fit(X_train)     <span class="comment"># ✅</span>
 X_train = scaler.transform(X_train)
 X_test  = scaler.transform(X_test)</div>`,
-        quiz: {
-          q: 'What is "data leakage" in machine learning?',
-          options: ['Data being stored insecurely', 'Test set information influencing training, creating false optimism', 'Network traffic from training servers', 'Models accidentally memorizing training data'],
-          answer: 1
-        }
-      }
-    }
+        quiz: { q:'What is "data leakage" in machine learning?', options:['Data stored insecurely','Test set information influencing training, creating false optimism','Network traffic from training servers','Models memorizing training data'], answer:1 } } }
   ],
   prompt: [
-    {
-      id: 'prompt-1', title: 'What Is Prompt Engineering?', xp: 50,
-      desc: 'The new programming paradigm',
-      content: {
-        text: `<h3>Prompt Engineering: Talking to AI</h3>
+    { id:'prompt-1', title:'What Is Prompt Engineering?', xp:50, desc:'The new programming paradigm',
+      content: { text:`<h3>Prompt Engineering: Talking to AI</h3>
 <p>Prompt engineering is the practice of designing inputs to AI language models to get reliable, high-quality outputs. It's become one of the most important skills in the AI era.</p>
 <p>LLMs like Claude and GPT are stochastic text predictors — they generate the most likely next token given context. Your prompt IS the context. A better prompt shapes a dramatically better result.</p>
 <h3>Why It Matters</h3>
@@ -1903,19 +1867,10 @@ X_test  = scaler.transform(X_test)</div>`,
 <h3>Core Principles</h3>
 <p><strong>Be specific:</strong> Vague prompts produce vague answers. "Summarize this" vs "Summarize this in 3 bullet points for a non-technical executive audience."</p>
 <p><strong>Provide context:</strong> The model can't read your mind. Tell it who you are, what you need, and what format you want.</p>
-<p><strong>Iterate:</strong> Rarely does the first prompt nail it. Treat prompting as a conversation, refining with each turn.</p>`,
-        quiz: {
-          q: 'Why does being specific in a prompt matter?',
-          options: ['Longer prompts cost less', 'Specific prompts give the model better context to produce precise, useful outputs', 'The AI requires a minimum word count', 'Specific prompts run faster'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'prompt-2', title: 'Zero-Shot vs Few-Shot Prompting', xp: 75,
-      desc: 'Teaching with examples',
-      content: {
-        text: `<h3>Giving the Model Examples</h3>
+<p><strong>Iterate:</strong> Rarely does the first prompt nail it. Treat prompting as a conversation.</p>`,
+        quiz: { q:'Why does being specific in a prompt matter?', options:['Longer prompts cost less','Specific prompts give the model better context to produce precise, useful outputs','The AI requires a minimum word count','Specific prompts run faster'], answer:1 } } },
+    { id:'prompt-2', title:'Zero-Shot vs Few-Shot Prompting', xp:75, desc:'Teaching with examples',
+      content: { text:`<h3>Giving the Model Examples</h3>
 <p>One of the most powerful techniques is showing the model what you want before asking for it.</p>
 <h3>Zero-Shot</h3>
 <p>Ask without any examples. Works well for common tasks the model has seen in training.</p>
@@ -1923,91 +1878,62 @@ X_test  = scaler.transform(X_test)</div>`,
 Classify this review as positive or negative:
 <span class="string">"The battery lasts forever and screen is gorgeous."</span></div>
 <h3>Few-Shot</h3>
-<p>Provide 2-5 labeled examples before your actual question. Dramatically improves performance on unusual or nuanced tasks.</p>
+<p>Provide 2–5 labeled examples before your actual question. Dramatically improves performance on unusual or nuanced tasks.</p>
 <div class="code-block"><span class="comment">Few-shot prompt:</span>
-Classify each review:
+Review: <span class="string">"Terrible build quality."</span>      → Negative
+Review: <span class="string">"Best laptop I've ever owned!"</span> → Positive
+Review: <span class="string">"It's okay, nothing special."</span>  → Neutral
 
-Review: <span class="string">"Terrible build quality."</span> → Negative
-Review: <span class="string">"Best laptop I've ever owned!"</span> → Positive  
-Review: <span class="string">"It's okay, nothing special."</span> → Neutral
-
-Review: <span class="string">"Battery died after 2 hours."</span> → ?</div>
-<p>The model picks up on the pattern from your examples and applies it to the new case. The examples shape the format, tone, and reasoning style of the output.</p>`,
-        quiz: {
-          q: 'When is few-shot prompting most useful?',
-          options: ['For simple math questions', 'For nuanced or unusual tasks where the model needs examples to understand the pattern', 'When you want shorter responses', 'Few-shot is never better than zero-shot'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'prompt-3', title: 'Chain-of-Thought Prompting', xp: 75,
-      desc: 'Making AI show its work',
-      content: {
-        text: `<h3>Chain-of-Thought: Step by Step</h3>
+Review: <span class="string">"Battery died after 2 hours."</span>  → ?</div>
+<p>The model picks up on the pattern from your examples and applies it to the new case. Examples shape the format, tone, and reasoning style of the output.</p>`,
+        quiz: { q:'When is few-shot prompting most useful?', options:['For simple math questions','For nuanced or unusual tasks where the model needs examples to understand the pattern','When you want shorter responses','Few-shot is never better than zero-shot'], answer:1 } } },
+    { id:'prompt-3', title:'Chain-of-Thought Prompting', xp:75, desc:'Making AI show its work',
+      content: { text:`<h3>Chain-of-Thought: Step by Step</h3>
 <p>Discovered by Google researchers in 2022, Chain-of-Thought (CoT) prompting dramatically improves reasoning by asking the model to explain its thinking before answering.</p>
 <h3>The Magic Phrase</h3>
 <p>Simply adding "Think step by step" to a prompt measurably improves performance on math, logic, and multi-step reasoning tasks.</p>
 <div class="code-block"><span class="comment">Without CoT:</span>
-Q: A store has 120 apples. They sell 45 and restock 30. How many?
-A: 75  <span class="comment">← might be wrong</span>
+Q: A store has 120 apples. They sell 45, restock 30. How many?
+A: 75  <span class="comment">← wrong</span>
 
 <span class="comment">With CoT:</span>
 Q: Think step by step. A store has 120 apples...
-A: Start: 120 apples
-   After selling 45: 120 - 45 = 75
-   After restocking 30: 75 + 30 = 105
+A: Start: 120
+   Sell 45:  120 - 45 = 75
+   Restock 30: 75 + 30 = 105
    Answer: 105 apples  <span class="comment">← correct</span></div>
 <h3>Zero-Shot CoT</h3>
-<p>The phrase "Let's think step by step" alone triggers reasoning without any examples. It's one of the most useful prompt engineering tricks discovered to date.</p>
+<p>"Let's think step by step" alone triggers reasoning without any examples. It's one of the most useful prompt engineering tricks discovered to date.</p>
 <h3>Tree of Thought</h3>
 <p>An extension: ask the model to explore multiple reasoning paths, evaluate each, and pick the best. Useful for complex planning problems.</p>`,
-        quiz: {
-          q: 'What is the main benefit of Chain-of-Thought prompting?',
-          options: ['It makes responses shorter', 'It improves reasoning by having the model explain its thinking step by step', 'It makes the model use less memory', 'It prevents the model from hallucinating names'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'prompt-4', title: 'System Prompts & Roles', xp: 100,
-      desc: 'Shaping AI personality and behavior',
-      content: {
-        text: `<h3>The System Prompt: Your AI's Constitution</h3>
+        quiz: { q:'What is the main benefit of Chain-of-Thought prompting?', options:['It makes responses shorter','It improves reasoning by having the model explain its thinking step by step','It uses less memory','It prevents hallucinating names'], answer:1 } } },
+    { id:'prompt-4', title:'System Prompts & Roles', xp:100, desc:'Shaping AI personality and behavior',
+      content: { text:`<h3>The System Prompt: Your AI's Constitution</h3>
 <p>Most modern AI APIs support a <strong>system prompt</strong> — instructions that appear before the conversation and shape how the model behaves throughout.</p>
 <div class="code-block"><span class="comment">Example system prompt:</span>
-You are DataBot, a specialized AI assistant for 
-data science teams. 
+You are DataBot, a specialized AI assistant for
+data science teams.
 
 - Respond in concise, technical language
 - Always include code examples when relevant
 - Default to Python unless asked otherwise
-- If asked about non-data topics, gently redirect
-- Format code in markdown code blocks</div>
+- Format code in markdown code blocks
+- If asked about non-data topics, gently redirect</div>
 <h3>Role Prompting</h3>
-<p>Assigning a role dramatically shapes the model's output style, vocabulary, and perspective:</p>
-<div class="code-block"><span class="string">"You are a senior machine learning engineer at Google..."</span>
+<p>Assigning a role shapes the model's output style, vocabulary, and perspective:</p>
+<div class="code-block"><span class="string">"You are a senior ML engineer at Google..."</span>
 <span class="comment">→ Technical, opinionated, performance-focused</span>
 
-<span class="string">"You are a patient teacher explaining to a 10-year-old..."</span>
+<span class="string">"You are a patient teacher for a 10-year-old..."</span>
 <span class="comment">→ Simple language, analogies, encouraging</span>
 
 <span class="string">"You are a skeptical scientist reviewing a paper..."</span>
 <span class="comment">→ Critical, evidence-focused, identifies weaknesses</span></div>
 <h3>Persona Consistency</h3>
-<p>A well-crafted system prompt keeps the AI in character across a multi-turn conversation, enabling coherent chatbots, assistants, and tools.</p>`,
-        quiz: {
-          q: 'What is the purpose of a system prompt in an AI conversation?',
-          options: ['To speed up the API response', 'To shape the model\'s behavior, tone, and focus throughout the whole conversation', 'To limit the number of tokens used', 'To authenticate the API request'],
-          answer: 1
-        }
-      }
-    },
-    {
-      id: 'prompt-5', title: 'Advanced Techniques & Anti-Patterns', xp: 125,
-      desc: 'Prompt injection, hallucinations & evaluation',
-      content: {
-        text: `<h3>Prompting at a Professional Level</h3>
+<p>A well-crafted system prompt keeps the AI in character across a multi-turn conversation, enabling coherent chatbots, assistants, and automated tools.</p>`,
+        quiz: { q:'What is the purpose of a system prompt in an AI conversation?', options:['To speed up the API response','To shape the model\'s behavior, tone, and focus throughout the conversation','To limit the number of tokens used','To authenticate the API request'], answer:1 } } },
+    { id:'prompt-5', title:'Advanced Techniques & Anti-Patterns', xp:125, desc:'Prompt injection, hallucinations & evaluation',
+      content: { text:`<h3>Prompting at a Professional Level</h3>
 <p>Advanced prompt engineers think not just about what they want, but about failure modes and how to prevent them.</p>
 <h3>Handling Hallucinations</h3>
 <p>LLMs generate plausible text — not necessarily true text. Mitigate hallucination by:</p>
@@ -2017,66 +1943,52 @@ data science teams.
 3. Use temperature=0 for factual tasks
 4. Cross-reference with retrieval (RAG)</div>
 <h3>Prompt Injection</h3>
-<p>Users can try to override your system prompt: "Ignore previous instructions and...". Defend by: keeping system prompts robust, not letting user input escape the context, and validating outputs.</p>
-<h3>Prompt Evaluation</h3>
-<p>Professional teams evaluate prompts systematically — not just "does it look good":</p>
-<div class="code-block"><span class="comment">Evaluation dimensions:</span>
-- Accuracy: Is the answer factually correct?
-- Relevance: Does it address what was asked?
-- Format: Is output in the requested structure?
-- Safety: Does it avoid harmful content?
+<p>Users can try to override your system prompt: "Ignore previous instructions and...". Defend by keeping system prompts robust and validating outputs.</p>
+<h3>Evaluation Dimensions</h3>
+<div class="code-block"><span class="comment">What to measure in a prompt eval:</span>
+- Accuracy:    Is the answer factually correct?
+- Relevance:   Does it address what was asked?
+- Format:      Is output in the requested structure?
+- Safety:      Does it avoid harmful content?
 - Consistency: Same input → same quality output?</div>
 <h3>The Output Format Trick</h3>
-<p>Specify output format explicitly: "Respond ONLY in JSON. No preamble, no explanation." This makes parsing reliable.</p>`,
-        quiz: {
-          q: 'What is "prompt injection" in the context of AI systems?',
-          options: ['Adding more tokens to a prompt', 'A user attempting to override system instructions via malicious input', 'A technique for making prompts shorter', 'Injecting code into AI responses'],
-          answer: 1
-        }
-      }
-    }
+<p>Specify output format explicitly: "Respond ONLY in JSON. No preamble, no explanation." This makes parsing reliable in production systems.</p>`,
+        quiz: { q:'What is "prompt injection"?', options:['Adding more tokens to a prompt','A user attempting to override system instructions via malicious input','A technique for making prompts shorter','Injecting code into AI responses'], answer:1 } } }
   ]
 };
 
 const BADGES = [
-  { id: 'first-login', icon: '🌟', name: 'First Step', desc: 'Signed in for the first time', condition: (p) => true },
-  { id: 'build-started', icon: '🔨', name: 'Builder', desc: 'Started the Build AI track', condition: (p) => p.completedLessons?.some(l => l.startsWith('build')) },
-  { id: 'code-started', icon: '💻', name: 'Coder', desc: 'Started the Code AI track', condition: (p) => p.completedLessons?.some(l => l.startsWith('code')) },
-  { id: 'data-started', icon: '📊', name: 'Data Collector', desc: 'Started the Collect Data track', condition: (p) => p.completedLessons?.some(l => l.startsWith('data')) },
-  { id: 'prompt-started', icon: '✨', name: 'Prompter', desc: 'Started the Prompt AI track', condition: (p) => p.completedLessons?.some(l => l.startsWith('prompt')) },
-  { id: 'xp-100', icon: '⚡', name: 'First Spark', desc: 'Earned 100 XP', condition: (p) => (p.xp||0) >= 100 },
-  { id: 'xp-500', icon: '🔥', name: 'On Fire', desc: 'Earned 500 XP', condition: (p) => (p.xp||0) >= 500 },
-  { id: 'build-complete', icon: '🏗️', name: 'AI Builder', desc: 'Completed the Build AI track', condition: (p) => CURRICULUM.build.every(l => p.completedLessons?.includes(l.id)) },
-  { id: 'code-complete', icon: '🚀', name: 'AI Coder', desc: 'Completed the Code AI track', condition: (p) => CURRICULUM.code.every(l => p.completedLessons?.includes(l.id)) },
-  { id: 'data-complete', icon: '🗄️', name: 'Data Master', desc: 'Completed the Collect Data track', condition: (p) => CURRICULUM.data.every(l => p.completedLessons?.includes(l.id)) },
-  { id: 'prompt-complete', icon: '🧠', name: 'Prompt Master', desc: 'Completed the Prompt AI track', condition: (p) => CURRICULUM.prompt.every(l => p.completedLessons?.includes(l.id)) },
-  { id: 'all-complete', icon: '👑', name: 'AI Champion', desc: 'Completed all 4 tracks', condition: (p) => {
-    return ['build','code','data','prompt'].every(t => CURRICULUM[t].every(l => p.completedLessons?.includes(l.id)));
-  }},
+  { id:'first-login',    icon:'🌟', name:'First Step',     desc:'Signed in for the first time',              cond: p => true },
+  { id:'build-started',  icon:'🔨', name:'Builder',        desc:'Started the Build AI track',                cond: p => p.completedLessons.some(l=>l.startsWith('build')) },
+  { id:'code-started',   icon:'💻', name:'Coder',          desc:'Started the Code AI track',                 cond: p => p.completedLessons.some(l=>l.startsWith('code')) },
+  { id:'data-started',   icon:'📊', name:'Data Collector', desc:'Started the Collect Data track',            cond: p => p.completedLessons.some(l=>l.startsWith('data')) },
+  { id:'prompt-started', icon:'✨', name:'Prompter',       desc:'Started the Prompt AI track',               cond: p => p.completedLessons.some(l=>l.startsWith('prompt')) },
+  { id:'xp-100',         icon:'⚡', name:'First Spark',    desc:'Earned 100 XP',                             cond: p => (p.xp||0) >= 100 },
+  { id:'xp-500',         icon:'🔥', name:'On Fire',        desc:'Earned 500 XP',                             cond: p => (p.xp||0) >= 500 },
+  { id:'xp-1000',        icon:'💎', name:'Elite Learner',  desc:'Earned 1000 XP',                            cond: p => (p.xp||0) >= 1000 },
+  { id:'build-complete', icon:'🏗️', name:'AI Builder',     desc:'Completed the Build AI track',              cond: p => CURRICULUM.build.every(l=>p.completedLessons.includes(l.id)) },
+  { id:'code-complete',  icon:'🚀', name:'AI Coder',       desc:'Completed the Code AI track',               cond: p => CURRICULUM.code.every(l=>p.completedLessons.includes(l.id)) },
+  { id:'data-complete',  icon:'🗄️', name:'Data Master',    desc:'Completed the Collect Data track',           cond: p => CURRICULUM.data.every(l=>p.completedLessons.includes(l.id)) },
+  { id:'prompt-complete',icon:'🧠', name:'Prompt Master',  desc:'Completed the Prompt AI track',             cond: p => CURRICULUM.prompt.every(l=>p.completedLessons.includes(l.id)) },
+  { id:'all-complete',   icon:'👑', name:'AI Champion',    desc:'Completed all 4 tracks',                    cond: p => ['build','code','data','prompt'].every(t=>CURRICULUM[t].every(l=>p.completedLessons.includes(l.id))) },
 ];
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 // STATE
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 let currentUser = null;
-let userProgress = {
-  xp: 0,
-  completedLessons: [],
-  streak: 0,
-  lastLogin: null,
-  dataEntries: [],
-  earnedBadges: []
-};
-let currentView = 'dashboard';
+let userProgress = { xp:0, completedLessons:[], streak:0, lastLogin:null, dataEntries:[], earnedBadges:[] };
 let currentLessonData = null;
 let currentLessonTrack = null;
+let quizAnswered = false;
+let promptHistory = [];
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 // AUTH
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 function switchTab(tab) {
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-  event.target.classList.add('active');
+  document.getElementById('tab-signin').classList.toggle('active', tab === 'signin');
+  document.getElementById('tab-signup').classList.toggle('active', tab === 'signup');
   document.getElementById('form-signin').style.display = tab === 'signin' ? 'flex' : 'none';
   document.getElementById('form-signup').style.display = tab === 'signup' ? 'flex' : 'none';
 }
@@ -2086,35 +1998,24 @@ async function signUp() {
   const displayName = document.getElementById('signup-displayname').value.trim();
   const password = document.getElementById('signup-password').value;
   const msg = document.getElementById('signup-msg');
+  const btn = document.getElementById('btn-signup');
 
-  if (!username || !displayName || !password) { msg.textContent = 'All fields required.'; msg.className = 'auth-msg error'; return; }
-  if (username.length < 3) { msg.textContent = 'Username must be at least 3 characters.'; msg.className = 'auth-msg error'; return; }
-  if (password.length < 6) { msg.textContent = 'Password must be at least 6 characters.'; msg.className = 'auth-msg error'; return; }
-  if (!/^[a-z0-9_]+$/.test(username)) { msg.textContent = 'Username: letters, numbers, underscores only.'; msg.className = 'auth-msg error'; return; }
+  if (!username || !displayName || !password) { setMsg(msg,'All fields required.','error'); return; }
+  if (username.length < 3) { setMsg(msg,'Username must be at least 3 characters.','error'); return; }
+  if (password.length < 6) { setMsg(msg,'Password must be at least 6 characters.','error'); return; }
+  if (!/^[a-z0-9_]+$/.test(username)) { setMsg(msg,'Username: letters, numbers, underscores only.','error'); return; }
 
+  btn.disabled = true; btn.textContent = 'Creating…';
   try {
     const snap = await db.ref(`users/${username}`).get();
-    if (snap.exists()) { msg.textContent = 'Username already taken.'; msg.className = 'auth-msg error'; return; }
-
-    const hashed = btoa(password + '_ailearn_salt_2024');
-    await db.ref(`users/${username}`).set({
-      displayName,
-      password: hashed,
-      xp: 0,
-      completedLessons: [],
-      streak: 0,
-      lastLogin: Date.now(),
-      dataEntries: [],
-      earnedBadges: ['first-login'],
-      createdAt: Date.now()
-    });
-
-    msg.textContent = 'Account created! Signing you in...';
-    msg.className = 'auth-msg success';
-    setTimeout(() => doSignIn(username, displayName, { xp: 0, completedLessons: [], streak: 1, lastLogin: Date.now(), dataEntries: [], earnedBadges: ['first-login'] }), 800);
+    if (snap.exists()) { setMsg(msg,'Username already taken.','error'); btn.disabled=false; btn.textContent='Create Account →'; return; }
+    const hashed = btoa(password + '_ailearn_2025');
+    await db.ref(`users/${username}`).set({ displayName, password:hashed, xp:0, completedLessons:[], streak:1, lastLogin:Date.now(), dataEntries:[], earnedBadges:['first-login'], createdAt:Date.now() });
+    setMsg(msg,'Account created! Signing you in…','success');
+    setTimeout(() => doSignIn(username, displayName, { xp:0, completedLessons:[], streak:1, lastLogin:Date.now(), dataEntries:[], earnedBadges:['first-login'] }), 700);
   } catch(e) {
-    msg.textContent = 'Error creating account. Try again.';
-    msg.className = 'auth-msg error';
+    setMsg(msg,'Error. Try again.','error');
+    btn.disabled=false; btn.textContent='Create Account →';
   }
 }
 
@@ -2122,31 +2023,35 @@ async function signIn() {
   const username = document.getElementById('signin-username').value.trim().toLowerCase();
   const password = document.getElementById('signin-password').value;
   const msg = document.getElementById('signin-msg');
+  const btn = document.getElementById('btn-signin');
 
-  if (!username || !password) { msg.textContent = 'Enter username and password.'; msg.className = 'auth-msg error'; return; }
+  if (!username || !password) { setMsg(msg,'Enter username and password.','error'); return; }
 
+  btn.disabled = true; btn.textContent = 'Signing in…';
   try {
     const snap = await db.ref(`users/${username}`).get();
-    if (!snap.exists()) { msg.textContent = 'User not found.'; msg.className = 'auth-msg error'; return; }
-
+    if (!snap.exists()) { setMsg(msg,'User not found.','error'); btn.disabled=false; btn.textContent='Sign In →'; return; }
     const data = snap.val();
-    const hashed = btoa(password + '_ailearn_salt_2024');
-    if (data.password !== hashed) { msg.textContent = 'Incorrect password.'; msg.className = 'auth-msg error'; return; }
+    const hashed = btoa(password + '_ailearn_2025');
+    if (data.password !== hashed) { setMsg(msg,'Incorrect password.','error'); btn.disabled=false; btn.textContent='Sign In →'; return; }
 
-    // Streak logic
     const now = Date.now();
-    const lastLogin = data.lastLogin || 0;
-    const daysDiff = Math.floor((now - lastLogin) / 86400000);
+    const daysDiff = Math.floor((now - (data.lastLogin||0)) / 86400000);
     let streak = data.streak || 0;
     if (daysDiff === 1) streak++;
     else if (daysDiff > 1) streak = 1;
 
-    await db.ref(`users/${username}`).update({ lastLogin: now, streak });
+    await db.ref(`users/${username}`).update({ lastLogin:now, streak });
     doSignIn(username, data.displayName, { ...data, streak });
   } catch(e) {
-    msg.textContent = 'Connection error. Try again.';
-    msg.className = 'auth-msg error';
+    setMsg(msg,'Connection error. Try again.','error');
+    btn.disabled=false; btn.textContent='Sign In →';
   }
+}
+
+function setMsg(el, text, type) {
+  el.textContent = text;
+  el.className = 'auth-msg' + (type ? ' ' + type : '');
 }
 
 function doSignIn(username, displayName, data) {
@@ -2159,7 +2064,6 @@ function doSignIn(username, displayName, data) {
     dataEntries: data.dataEntries || [],
     earnedBadges: data.earnedBadges || ['first-login']
   };
-
   document.getElementById('landing').style.display = 'none';
   document.getElementById('app').style.display = 'block';
   initApp();
@@ -2167,113 +2071,103 @@ function doSignIn(username, displayName, data) {
 
 function logOut() {
   currentUser = null;
-  userProgress = { xp: 0, completedLessons: [], streak: 0, dataEntries: [], earnedBadges: [] };
   document.getElementById('landing').style.display = 'flex';
   document.getElementById('app').style.display = 'none';
   document.getElementById('signin-username').value = '';
   document.getElementById('signin-password').value = '';
   document.getElementById('signin-msg').textContent = '';
+  document.getElementById('btn-signin').disabled = false;
+  document.getElementById('btn-signin').textContent = 'Sign In →';
 }
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 // APP INIT
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 function initApp() {
   document.getElementById('sidebar-username').textContent = currentUser.displayName;
   updateUI();
   renderLessonLists();
   renderBadges();
+  renderDataTable();
   showView('dashboard');
 }
 
 function updateUI() {
-  const xp = userProgress.xp;
-  const lessons = userProgress.completedLessons.length;
-  const badges = userProgress.earnedBadges.length;
+  const { xp, completedLessons, streak, earnedBadges } = userProgress;
   const total = Object.values(CURRICULUM).flat().length;
+  const pct = Math.round((completedLessons.length / total) * 100);
 
-  document.getElementById('topbar-xp').textContent = `${xp} XP`;
+  document.getElementById('topbar-xp').textContent = `⚡ ${xp} XP`;
+  document.getElementById('topbar-streak').textContent = `🔥 ${streak} day${streak !== 1 ? 's' : ''}`;
   document.getElementById('dash-welcome').textContent = `Welcome back, ${currentUser.displayName}! 👋`;
   document.getElementById('stat-xp').textContent = xp;
-  document.getElementById('stat-lessons').textContent = lessons;
-  document.getElementById('stat-streak').textContent = userProgress.streak;
-  document.getElementById('stat-badges').textContent = badges;
-
-  const pct = Math.round((lessons / total) * 100);
+  document.getElementById('stat-lessons').textContent = completedLessons.length;
+  document.getElementById('stat-streak').textContent = streak;
+  document.getElementById('stat-badges').textContent = earnedBadges.length;
   document.getElementById('overall-pct').textContent = pct + '%';
   document.getElementById('overall-bar').style.width = pct + '%';
 
-  // Level
   let level = 'Beginner';
-  if (xp >= 1000) level = 'Expert';
+  if (xp >= 1500) level = 'Master';
+  else if (xp >= 1000) level = 'Expert';
   else if (xp >= 500) level = 'Advanced';
   else if (xp >= 200) level = 'Intermediate';
   document.getElementById('sidebar-level').textContent = `◈ ${level}`;
 
-  // Track pills
   ['build','code','data','prompt'].forEach(track => {
-    const trackLessons = CURRICULUM[track];
-    const completed = trackLessons.filter(l => userProgress.completedLessons.includes(l.id)).length;
+    const lessons = CURRICULUM[track];
+    const done = lessons.filter(l => completedLessons.includes(l.id)).length;
     const pill = document.getElementById(`pill-${track}`);
-    if (completed === 0) { pill.textContent = 'Not started'; pill.className = 'track-progress-pill not-started'; }
-    else if (completed === trackLessons.length) { pill.textContent = 'Completed ✓'; pill.className = 'track-progress-pill completed'; }
-    else { pill.textContent = `${completed}/${trackLessons.length} done`; pill.className = 'track-progress-pill in-progress'; }
+    if (done === 0) { pill.textContent = 'Not started'; pill.className = 'track-progress-pill not-started'; }
+    else if (done === lessons.length) { pill.textContent = 'Completed ✓'; pill.className = 'track-progress-pill completed'; }
+    else { pill.textContent = `${done}/${lessons.length} done`; pill.className = 'track-progress-pill in-progress'; }
   });
 }
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 // VIEWS
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 const VIEW_TITLES = {
-  dashboard: 'Dashboard',
-  'track-build': 'Build AI',
-  'track-code': 'Code AI',
-  'track-data': 'Collect Data',
-  'track-prompt': 'Prompt AI',
-  'lesson-content': 'Lesson',
-  sandbox: 'Code Sandbox',
-  promptlab: 'Prompt Lab',
-  achievements: 'Achievements',
-  'data-tool': 'Dataset Collector'
+  dashboard:'Dashboard','track-build':'Build AI','track-code':'Code AI','track-data':'Collect Data',
+  'track-prompt':'Prompt AI','lesson-content':'Lesson',sandbox:'Code Sandbox',
+  promptlab:'Prompt Lab',datatool:'Dataset Collector',achievements:'Achievements',leaderboard:'Leaderboard'
 };
 
-function showView(viewName) {
+function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
 
-  const el = document.getElementById(`view-${viewName}`);
+  const el = document.getElementById(`view-${name}`);
   if (el) el.classList.add('active');
 
-  currentView = viewName;
-  document.getElementById('topbar-title').textContent = VIEW_TITLES[viewName] || viewName;
-
-  // Highlight nav
+  document.getElementById('topbar-title').textContent = VIEW_TITLES[name] || name;
   document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.getAttribute('onclick')?.includes(viewName)) n.classList.add('active');
+    if (n.getAttribute('data-view') === name) n.classList.add('active');
   });
 
-  // Close mobile sidebar
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sidebar-overlay').classList.remove('show');
 
-  if (viewName === 'data-tool') renderDataTable();
+  if (name === 'leaderboard') loadLeaderboard();
+  if (name === 'datatool') renderDataTable();
 }
 
-// ════════════════════════════════════════
-// LESSON RENDERING
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
+// LESSONS
+// ════════════════════════════════════════════════
 function renderLessonLists() {
   ['build','code','data','prompt'].forEach(track => {
     const container = document.getElementById(`lessons-${track}`);
     container.innerHTML = '';
     CURRICULUM[track].forEach((lesson, idx) => {
       const done = userProgress.completedLessons.includes(lesson.id);
-      const prev = idx === 0 || userProgress.completedLessons.includes(CURRICULUM[track][idx-1].id);
-      const locked = !prev && !done;
+      const prevDone = idx === 0 || userProgress.completedLessons.includes(CURRICULUM[track][idx-1].id);
+      const locked = !prevDone && !done;
+
       const item = document.createElement('div');
       item.className = `lesson-item${done ? ' completed' : ''}${locked ? ' locked' : ''}`;
       item.innerHTML = `
-        <div class="lesson-num ${done ? 'done' : (prev && !done ? 'active-lesson' : 'todo')}">${done ? '✓' : (idx+1)}</div>
+        <div class="lesson-num ${done ? 'done' : (prevDone ? 'current' : 'todo')}">${done ? '✓' : (idx+1)}</div>
         <div class="lesson-info">
           <div class="lesson-title">${lesson.title}</div>
           <div class="lesson-sub">${lesson.desc}</div>
@@ -2289,13 +2183,13 @@ function renderLessonLists() {
 function openLesson(lesson, track) {
   currentLessonData = lesson;
   currentLessonTrack = track;
+  quizAnswered = false;
   const done = userProgress.completedLessons.includes(lesson.id);
   const c = lesson.content;
 
-  const view = document.getElementById('lesson-content-view');
-  view.innerHTML = `
+  document.getElementById('lesson-content-view').innerHTML = `
     <div class="lesson-content-header">
-      <button class="btn-back" onclick="showView('track-${track}')">← Back</button>
+      <button class="btn-back" onclick="showView('track-${track}')">← ${track.charAt(0).toUpperCase()+track.slice(1)} AI Track</button>
       <div class="lesson-content-title">${lesson.title}</div>
     </div>
     <div class="content-block">${c.text}</div>
@@ -2303,59 +2197,48 @@ function openLesson(lesson, track) {
       <div class="quiz-q">🧠 Quick Check: ${c.quiz.q}</div>
       <div class="quiz-options" id="quiz-opts">
         ${c.quiz.options.map((opt,i) => `
-          <div class="quiz-option" onclick="answerQuiz(${i}, ${c.quiz.answer})">
-            <span class="opt-letter">${String.fromCharCode(65+i)}</span>
-            ${opt}
-          </div>
-        `).join('')}
+          <div class="quiz-option" onclick="answerQuiz(${i}, ${c.quiz.answer}, this)">
+            <span class="opt-letter">${String.fromCharCode(65+i)}</span>${opt}
+          </div>`).join('')}
       </div>
       <div class="quiz-result" id="quiz-result"></div>
     </div>
-    <button class="btn-complete" onclick="completeLesson()" ${done ? '' : 'id="complete-btn"'}>
-      ${done ? '✓ Lesson Completed' : 'Mark as Complete →'}
+    <button class="btn-complete ${done ? 'already-done' : ''}" onclick="completeLesson()">
+      ${done ? '✓ Already Completed' : 'Mark as Complete →'}
     </button>
   `;
-
-  if (done) {
-    document.querySelector('.btn-complete').style.background = 'rgba(52,211,153,0.2)';
-    document.querySelector('.btn-complete').style.color = 'var(--green)';
-  }
 
   showView('lesson-content');
 }
 
-let quizAnswered = false;
-function answerQuiz(chosen, correct) {
+function answerQuiz(chosen, correct, el) {
   if (quizAnswered) return;
   quizAnswered = true;
-  const opts = document.querySelectorAll('.quiz-option');
-  const result = document.getElementById('quiz-result');
-  opts.forEach((opt, i) => {
+  document.querySelectorAll('.quiz-option').forEach((opt, i) => {
+    opt.classList.add('disabled');
     if (i === correct) opt.classList.add('correct');
     else if (i === chosen) opt.classList.add('wrong');
   });
+  const result = document.getElementById('quiz-result');
   if (chosen === correct) {
     result.textContent = '✓ Correct! Great work.';
     result.className = 'quiz-result correct';
   } else {
-    result.textContent = `✗ Not quite. The answer is: ${String.fromCharCode(65+correct)}.`;
+    result.textContent = `✗ Not quite — the answer is ${String.fromCharCode(65+correct)}.`;
     result.className = 'quiz-result wrong';
   }
   result.style.display = 'block';
 }
 
 async function completeLesson() {
-  quizAnswered = false;
   if (!currentLessonData) return;
   const id = currentLessonData.id;
   if (userProgress.completedLessons.includes(id)) {
     showView(`track-${currentLessonTrack}`);
     return;
   }
-
   userProgress.completedLessons.push(id);
   userProgress.xp += currentLessonData.xp;
-
   await saveProgress();
   checkBadges();
   updateUI();
@@ -2365,100 +2248,64 @@ async function completeLesson() {
   showView(`track-${currentLessonTrack}`);
 }
 
-// ════════════════════════════════════════
-// DATA COLLECTION TOOL
-// ════════════════════════════════════════
-function addDataEntry() {
-  const text = document.getElementById('data-text').value.trim();
-  const label = document.getElementById('data-label').value.trim();
-  if (!text || !label) { showToast('⚠️', 'Missing fields', 'Enter both text and label'); return; }
-
-  const entry = { text, label, ts: Date.now() };
-  userProgress.dataEntries.push(entry);
-  saveProgress();
-  document.getElementById('data-text').value = '';
-  document.getElementById('data-label').value = '';
-  renderDataTable();
-  showToast('📊', 'Entry added!', `Label: ${label}`);
-}
-
-function renderDataTable() {
-  const tbody = document.getElementById('data-tbody');
-  const entries = userProgress.dataEntries || [];
-  document.getElementById('data-count').textContent = entries.length;
-  const labels = new Set(entries.map(e => e.label));
-  document.getElementById('data-labels').textContent = labels.size;
-
-  if (entries.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:2rem">No data yet. Add entries above.</td></tr>';
-    return;
-  }
-  tbody.innerHTML = entries.slice().reverse().map((e, i) => `
-    <tr>
-      <td>${entries.length - i}</td>
-      <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.text}</td>
-      <td><span style="background:var(--glow);border:1px solid var(--border);border-radius:6px;padding:0.15rem 0.5rem;font-size:0.75rem;color:var(--accent3)">${e.label}</span></td>
-      <td>${new Date(e.ts).toLocaleString()}</td>
-    </tr>
-  `).join('');
-}
-
-// ════════════════════════════════════════
-// CODE SANDBOX
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
+// SANDBOX
+// ════════════════════════════════════════════════
 function runCode() {
   const code = document.getElementById('code-editor').value;
-  const output = document.getElementById('code-output');
-  output.style.color = 'var(--green)';
+  const out = document.getElementById('code-output');
+  out.style.color = 'var(--green)';
 
-  const logs = [];
-  const fakeConsole = { log: (...args) => logs.push(args.join(' ')) };
-
-  try {
-    // Simulate common patterns
-    let result = simulateCode(code);
-    output.textContent = result || logs.join('\n') || '(no output)';
-  } catch(e) {
-    output.style.color = 'var(--red)';
-    output.textContent = `Error: ${e.message}`;
-  }
-}
-
-function simulateCode(code) {
   const lines = [];
-  // Detect print statements and simulate
-  const printMatches = code.match(/print\(([^)]+)\)/g) || [];
-  printMatches.forEach(p => {
-    const inner = p.slice(6, -1).replace(/f"([^"]*)"/, (_, s) => {
+  const startTime = Date.now();
+
+  // Extract print statements
+  const printRe = /print\(([^)]+)\)/g;
+  let m;
+  while ((m = printRe.exec(code)) !== null) {
+    let inner = m[1];
+    // f-strings
+    inner = inner.replace(/f["']([^"']*)["']/, (_, s) => {
       return s.replace(/\{[^}]*\}/g, () => (Math.random() * 0.9 + 0.05).toFixed(4));
-    }).replace(/["']/g, '');
-    lines.push('>>> ' + inner);
-  });
+    });
+    // plain strings
+    inner = inner.replace(/["'`]/g, '');
+    // format specifiers
+    inner = inner.replace(/:\.\df/g, '');
+    lines.push(inner.trim() || '');
+  }
 
   if (lines.length === 0) {
-    // Generic feedback
-    if (code.includes('neural_net') || code.includes('model')) {
-      lines.push('>>> Running AI model...');
-      lines.push(`>>> Output: ${(Math.random()).toFixed(4)}`);
-      lines.push('>>> ✓ Model executed successfully');
+    if (code.includes('neural_net') || code.includes('SimpleNet') || code.includes('model')) {
+      lines.push('Running model…');
+      lines.push(`Output: ${(Math.random()).toFixed(6)}`);
+      lines.push('Confidence: ' + (Math.random() > 0.5 ? 'HIGH' : 'LOW'));
+      lines.push('');
+      lines.push('✓ Model executed successfully');
     } else if (code.includes('import')) {
-      lines.push('>>> Imports loaded ✓');
-      lines.push('>>> Code executed successfully');
+      lines.push('Imports loaded ✓');
+      lines.push('Script executed.');
     } else {
-      lines.push('>>> Code executed');
+      lines.push('Code executed (no output).');
     }
   }
 
+  const elapsed = ((Date.now() - startTime) / 1000 + Math.random() * 0.15 + 0.02).toFixed(3);
   lines.push('');
-  lines.push(`[Completed in ${(Math.random() * 0.3 + 0.05).toFixed(3)}s]`);
-  return lines.join('\n');
+  lines.push(`[Finished in ${elapsed}s]`);
+  out.textContent = lines.join('\n');
 }
 
-// ════════════════════════════════════════
+function clearOutput() {
+  document.getElementById('code-output').textContent = '// Output cleared\n';
+}
+
+// ════════════════════════════════════════════════
 // PROMPT LAB
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 function fillPrompt(el) {
   document.getElementById('prompt-input').value = el.textContent.trim();
+  document.getElementById('prompt-input').focus();
 }
 
 async function sendPrompt() {
@@ -2466,8 +2313,11 @@ async function sendPrompt() {
   if (!prompt) return;
 
   const responseEl = document.getElementById('prompt-response');
+  const btn = document.getElementById('btn-send-prompt');
+  btn.disabled = true;
+
   responseEl.className = 'prompt-response visible loading';
-  responseEl.textContent = '⏳ Thinking...';
+  responseEl.innerHTML = '<div class="typing-dots"><span></span><span></span><span></span></div> Claude is thinking…';
 
   try {
     const res = await fetch('https://api.anthropic.com/v1/messages', {
@@ -2476,66 +2326,211 @@ async function sendPrompt() {
       body: JSON.stringify({
         model: 'claude-sonnet-4-6',
         max_tokens: 1000,
-        system: 'You are AILearn Assistant, an expert AI tutor on the AILearn platform. Help users learn about building AI, coding AI models, collecting data, and prompt engineering. Be clear, educational, and encouraging. Use markdown formatting.',
+        system: 'You are AILearn Assistant, an expert AI tutor on the AILearn platform. Help users learn about building AI, coding AI models, collecting data, and prompt engineering. Be clear, educational, and encouraging. Use markdown formatting when helpful.',
         messages: [{ role: 'user', content: prompt }]
       })
     });
-
     const data = await res.json();
     const text = data.content?.[0]?.text || 'No response received.';
     responseEl.className = 'prompt-response visible';
     responseEl.innerHTML = formatMarkdown(text);
-    showToast('🧪', 'Prompt sent!', 'Claude responded to your prompt');
+
+    // Save to history
+    promptHistory.unshift({ q: prompt, a: text });
+    if (promptHistory.length > 5) promptHistory.pop();
+    renderPromptHistory();
+
+    document.getElementById('prompt-input').value = '';
+    showToast('🧪', 'Prompt sent!', 'AI responded successfully');
   } catch(e) {
     responseEl.className = 'prompt-response visible';
     responseEl.style.color = 'var(--red)';
-    responseEl.textContent = 'Could not connect to AI. Check your network.';
+    responseEl.textContent = 'Could not connect. Check your network or try again.';
+  } finally {
+    btn.disabled = false;
   }
+}
+
+function renderPromptHistory() {
+  const container = document.getElementById('prompt-history-container');
+  if (promptHistory.length <= 1) { container.innerHTML = ''; return; }
+  const old = promptHistory.slice(1);
+  container.innerHTML = `
+    <div class="section-heading" style="font-size:0.875rem;margin-bottom:0.75rem;margin-top:0">📝 Previous Prompts</div>
+    ${old.map(h => `
+      <div class="history-entry">
+        <div class="history-entry-q">You: ${escapeHtml(h.q)}</div>
+        <div class="history-entry-a">${formatMarkdown(h.a).substring(0, 400)}${h.a.length > 400 ? '…' : ''}</div>
+      </div>`).join('')}
+  `;
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
 function formatMarkdown(text) {
   return text
-    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;font-family:var(--font-mono);font-size:0.82rem;overflow-x:auto;color:var(--cyan);margin:0.75rem 0">$1</pre>')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```[\w]*\n?([\s\S]*?)```/g, '<pre style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:1rem;font-family:var(--font-mono);font-size:0.82rem;overflow-x:auto;color:var(--cyan);margin:0.75rem 0;white-space:pre-wrap">$1</pre>')
     .replace(/`([^`]+)`/g, '<code style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:0.1rem 0.4rem;font-family:var(--font-mono);font-size:0.85em;color:var(--cyan)">$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong style="color:var(--text)">$1</strong>')
     .replace(/^### (.+)$/gm, '<h4 style="font-family:var(--font-display);font-size:0.95rem;color:var(--text);margin:1rem 0 0.4rem">$1</h4>')
     .replace(/^## (.+)$/gm, '<h3 style="font-family:var(--font-display);font-size:1.05rem;color:var(--text);margin:1rem 0 0.5rem">$1</h3>')
-    .replace(/^- (.+)$/gm, '<li style="margin:0.3rem 0;margin-left:1rem">$1</li>')
-    .replace(/\n\n/g, '</p><p style="margin-top:0.75rem">')
+    .replace(/^# (.+)$/gm, '<h2 style="font-family:var(--font-display);font-size:1.2rem;color:var(--text);margin:1.25rem 0 0.6rem">$1</h2>')
+    .replace(/^[-*] (.+)$/gm, '<li style="margin:0.3rem 0;margin-left:1.25rem;list-style:disc">$1</li>')
+    .replace(/(<li[^>]*>.*?<\/li>\s*)+/gs, m => `<ul style="margin:0.5rem 0">${m}</ul>`)
+    .replace(/\n\n/g, '</p><p style="margin-top:0.65rem">')
+    .replace(/\n/g, '<br>')
     .replace(/^/, '<p>')
     .replace(/$/, '</p>');
 }
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
+// DATASET COLLECTOR
+// ════════════════════════════════════════════════
+function addDataEntry() {
+  const text = document.getElementById('data-text').value.trim();
+  const label = document.getElementById('data-label-input').value.trim();
+  if (!text || !label) { showToast('⚠️', 'Missing fields', 'Enter both text and a label'); return; }
+  userProgress.dataEntries.unshift({ text, label, ts: Date.now() });
+  saveProgress();
+  document.getElementById('data-text').value = '';
+  document.getElementById('data-label-input').value = '';
+  renderDataTable();
+  showToast('📊', 'Entry added!', `Labeled as: ${label}`);
+}
+
+function renderDataTable() {
+  const entries = userProgress.dataEntries || [];
+  const filter = (document.getElementById('data-filter')?.value || '').toLowerCase();
+  const filtered = filter ? entries.filter(e => e.text.toLowerCase().includes(filter) || e.label.toLowerCase().includes(filter)) : entries;
+
+  document.getElementById('data-count').textContent = entries.length;
+  const labelCounts = {};
+  entries.forEach(e => labelCounts[e.label] = (labelCounts[e.label] || 0) + 1);
+  document.getElementById('data-labels').textContent = Object.keys(labelCounts).length;
+  const topLabel = Object.entries(labelCounts).sort((a,b) => b[1]-a[1])[0];
+  document.getElementById('data-top-label').textContent = topLabel ? topLabel[0] : '—';
+
+  const tbody = document.getElementById('data-tbody');
+  if (!tbody) return;
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--text3);padding:2.5rem;font-family:var(--font-display)">
+      ${filter ? 'No entries match your filter.' : 'No data yet. Add entries above.'}
+    </td></tr>`;
+    return;
+  }
+  tbody.innerHTML = filtered.map((e, i) => {
+    const origIdx = entries.indexOf(e);
+    const num = entries.length - i;
+    const time = new Date(e.ts);
+    const timeStr = time.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'}) + ' ' + time.toLocaleDateString([], {month:'short',day:'numeric'});
+    return `<tr>
+      <td>${num}</td>
+      <td title="${escapeHtml(e.text)}">${escapeHtml(e.text)}</td>
+      <td><span class="label-pill">${escapeHtml(e.label)}</span></td>
+      <td>${timeStr}</td>
+      <td><button class="btn-delete-row" onclick="deleteEntry(${origIdx})" title="Delete">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function deleteEntry(idx) {
+  userProgress.dataEntries.splice(idx, 1);
+  saveProgress();
+  renderDataTable();
+}
+
+function clearData() {
+  if (!confirm(`Delete all ${userProgress.dataEntries.length} entries? This cannot be undone.`)) return;
+  userProgress.dataEntries = [];
+  saveProgress();
+  renderDataTable();
+  showToast('🗑', 'Dataset cleared', 'All entries removed');
+}
+
+function exportCSV() {
+  if (!userProgress.dataEntries.length) { showToast('⚠️','Nothing to export','Add some entries first'); return; }
+  const rows = [['#','text','label','timestamp'],
+    ...userProgress.dataEntries.map((e,i) => [i+1, `"${e.text.replace(/"/g,'""')}"`, e.label, new Date(e.ts).toISOString()])
+  ];
+  const csv = rows.map(r => r.join(',')).join('\n');
+  const blob = new Blob([csv], {type:'text/csv'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `ailearn_dataset_${Date.now()}.csv`; a.click();
+  URL.revokeObjectURL(url);
+  showToast('⬇️','CSV exported!',`${userProgress.dataEntries.length} entries saved`);
+}
+
+// ════════════════════════════════════════════════
 // BADGES
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 function checkBadges() {
+  let newBadge = false;
   BADGES.forEach(badge => {
-    if (!userProgress.earnedBadges.includes(badge.id) && badge.condition(userProgress)) {
+    if (!userProgress.earnedBadges.includes(badge.id) && badge.cond(userProgress)) {
       userProgress.earnedBadges.push(badge.id);
-      setTimeout(() => showToast(badge.icon, `Badge Unlocked: ${badge.name}`, badge.desc), 1500);
+      setTimeout(() => showToast(badge.icon, `Badge Unlocked: ${badge.name}`, badge.desc), 1800);
+      newBadge = true;
     }
   });
-  saveProgress();
+  if (newBadge) saveProgress();
 }
 
 function renderBadges() {
   const grid = document.getElementById('badges-grid');
-  grid.innerHTML = BADGES.map(badge => {
-    const earned = userProgress.earnedBadges.includes(badge.id);
-    return `
-      <div class="badge-card ${earned ? 'earned' : 'locked'}">
-        <div class="badge-icon">${badge.icon}</div>
-        <div class="badge-name">${badge.name}</div>
-        <div class="badge-desc">${badge.desc}</div>
-      </div>
-    `;
+  grid.innerHTML = BADGES.map(b => {
+    const earned = userProgress.earnedBadges.includes(b.id);
+    return `<div class="badge-card ${earned ? 'earned' : 'locked'}">
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+      ${earned ? '<div class="badge-earned-label">✓ Earned</div>' : ''}
+    </div>`;
   }).join('');
 }
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
+// LEADERBOARD
+// ════════════════════════════════════════════════
+async function loadLeaderboard() {
+  const container = document.getElementById('leaderboard-container');
+  container.innerHTML = '<div class="lb-loading">Loading scores…</div>';
+  try {
+    const snap = await db.ref('users').orderByChild('xp').limitToLast(20).get();
+    if (!snap.exists()) { container.innerHTML = '<div class="lb-loading">No data yet.</div>'; return; }
+
+    const entries = [];
+    snap.forEach(child => {
+      const d = child.val();
+      if (d.displayName && typeof d.xp === 'number') {
+        entries.push({ username: child.key, name: d.displayName, xp: d.xp, lessons: (d.completedLessons||[]).length });
+      }
+    });
+    entries.sort((a,b) => b.xp - a.xp);
+
+    container.innerHTML = entries.map((e, i) => {
+      const rank = i + 1;
+      const rankClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : '';
+      const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+      const isMe = e.username === currentUser?.username;
+      return `<div class="lb-entry ${isMe ? 'me' : ''}">
+        <div class="lb-rank ${rankClass}">${rankEmoji}</div>
+        <div class="lb-name">${escapeHtml(e.name)} ${isMe ? '<span class="lb-me-badge">you</span>' : ''}</div>
+        <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text3);margin-right:0.5rem">${e.lessons} lessons</div>
+        <div class="lb-xp">⚡ ${e.xp} XP</div>
+      </div>`;
+    }).join('') || '<div class="lb-loading">No scores yet.</div>';
+  } catch(e) {
+    container.innerHTML = '<div class="lb-loading" style="color:var(--red)">Could not load leaderboard.</div>';
+  }
+}
+
+// ════════════════════════════════════════════════
 // FIREBASE SAVE
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 async function saveProgress() {
   if (!currentUser) return;
   try {
@@ -2546,14 +2541,12 @@ async function saveProgress() {
       dataEntries: userProgress.dataEntries,
       earnedBadges: userProgress.earnedBadges
     });
-  } catch(e) {
-    console.warn('Save failed:', e);
-  }
+  } catch(e) { console.warn('Save failed:', e); }
 }
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 // TOAST
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 let toastTimer;
 function showToast(icon, title, sub) {
   const toast = document.getElementById('toast');
@@ -2565,19 +2558,26 @@ function showToast(icon, title, sub) {
   toastTimer = setTimeout(() => toast.classList.remove('show'), 3500);
 }
 
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 // MOBILE
-// ════════════════════════════════════════
+// ════════════════════════════════════════════════
 function toggleSidebar() {
   document.getElementById('sidebar').classList.toggle('open');
   document.getElementById('sidebar-overlay').classList.toggle('show');
 }
 
-// Keyboard shortcuts
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('sidebar-overlay').classList.remove('show');
+  }
+  // Ctrl/Cmd + Enter to run code in sandbox
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && document.getElementById('view-sandbox').classList.contains('active')) {
+    runCode();
+  }
+  // Ctrl/Cmd + Enter to send prompt in prompt lab
+  if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && document.getElementById('view-promptlab').classList.contains('active')) {
+    sendPrompt();
   }
 });
 </script>
