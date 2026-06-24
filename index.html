@@ -1685,7 +1685,7 @@ model = LinearRegression()
 model.fit(X_train, y_train)
 
 predicted = model.predict([[1800]])
-print(f<span class="string">"Predicted price: ${predicted[0]:.0f}k"</span>)</div>
+print(f<span class="string">"Predicted price: \${predicted[0]:.0f}k"</span>)</div>
 <p>That's a fully trained ML model in 15 lines. scikit-learn handles the math — gradient descent, matrix operations — behind a clean API.</p>`,
         quiz: { q:'What does train_test_split do?', options:['Deletes some of your data','Divides data into training and evaluation sets','Makes your model faster','Normalizes your features'], answer:1 } } },
     { id:'code-3', title:'Deep Learning with PyTorch', xp:100, desc:'Tensors, layers, and training loops',
