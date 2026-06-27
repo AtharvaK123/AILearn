@@ -236,25 +236,32 @@
 
 <!-- footer injected by nav.js -->
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script src="curriculum.js"></script>
 <script src="nav.js"></script>
 <script>
-  // ── MOCK DATA (replace with Firebase reads) ──
-  const MOCK_USERS = [
-    { name: 'Aria Chen',     handle: 'ariachen',   xp: 4820, lessons: 96,  streak: 34, color: '#6C7FFF' },
-    { name: 'Marcus Reid',   handle: 'marcusai',   xp: 3960, lessons: 79,  streak: 21, color: '#22D3EE' },
-    { name: 'Priya Nair',    handle: 'priya_ml',   xp: 3410, lessons: 68,  streak: 15, color: '#FF6B6B' },
-    { name: 'Jake Torres',   handle: 'jakeai',     xp: 2880, lessons: 57,  streak: 9,  color: '#FFB84D' },
-    { name: 'Sofia Müller',  handle: 'sofiaml',   xp: 2350, lessons: 47,  streak: 7,  color: '#34D399' },
-    { name: 'David Kim',     handle: 'dkim_ai',    xp: 1900, lessons: 38,  streak: 5,  color: '#8B9FFF' },
-    { name: 'Lena Ivanova',  handle: 'lenai',      xp: 1540, lessons: 30,  streak: 3,  color: '#22D3EE' },
-    { name: 'Omar Hassan',   handle: 'omarh',      xp: 1200, lessons: 24,  streak: 2,  color: '#FFB84D' },
-    { name: 'Yuki Tanaka',   handle: 'yukiai',     xp: 890,  lessons: 17,  streak: 1,  color: '#FF6B6B' },
-    { name: 'Emma Walsh',    handle: 'emmawalsh',  xp: 640,  lessons: 12,  streak: 1,  color: '#34D399' },
+  // Palette for avatar colours (cycled by index)
+  const AVATAR_COLORS = [
+    '#6C7FFF','#22D3EE','#FF6B6B','#FFB84D',
+    '#34D399','#8B9FFF','#F472B6','#A78BFA'
   ];
 
-  let currentTab = 'global';
+  let currentTab  = 'global';
+  let currentUser = null;  // username of signed-in user (set after auth)
+  let allUsers    = [];    // cached from Firebase
 
+  // ── Auth state: get current user ─────────────────────────
+  fbAuth.onAuthStateChanged(async user => {
+    if (user) {
+      currentUser = await getUsernameForUID(user.uid) || usernameFromEmail(user.email);
+    }
+  });
+
+  // ── Tab switching ─────────────────────────────────────────
   function setTab(tab, el) {
     currentTab = tab;
     document.querySelectorAll('.lb-tab').forEach(b => b.classList.remove('active'));
@@ -262,56 +269,102 @@
     renderLeaderboard();
   }
 
+  // ── Load from Firebase ────────────────────────────────────
+  async function loadLeaderboard() {
+    const podiumEl = document.getElementById('podium');
+    const bodyEl   = document.getElementById('lb-body');
+    bodyEl.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text3); font-family:var(--font-d); font-size:0.85rem;">
+      <div style="font-size:1.5rem; margin-bottom:0.5rem;">⏳</div>Loading leaderboard…</div>`;
+
+    try {
+      const snap = await db.ref('users').orderByChild('xp').limitToLast(100).get();
+      if (!snap.exists()) {
+        bodyEl.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text3); font-family:var(--font-d);">
+          <div style="font-size:1.5rem; margin-bottom:0.5rem;">📊</div>No learners yet — be first!</div>`;
+        podiumEl.innerHTML = '';
+        return;
+      }
+
+      allUsers = [];
+      snap.forEach(child => {
+        const d = child.val();
+        if (d.displayName && typeof d.xp === 'number') {
+          allUsers.push({
+            username: child.key,
+            name:     d.displayName,
+            xp:       d.xp   || 0,
+            lessons:  (d.done    || []).length,
+            streak:   d.streak   || 0,
+            badges:   (d.badges  || []).length
+          });
+        }
+      });
+      // Firebase orderByChild gives ascending, so reverse for descending XP
+      allUsers.sort((a, b) => b.xp - a.xp);
+      renderLeaderboard();
+    } catch (err) {
+      bodyEl.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--coral); font-family:var(--font-d);">
+        ⚠️ Could not load: ${err.message}</div>`;
+    }
+  }
+
   function renderLeaderboard() {
-    // In real app, fetch from Firebase filtered by time range
-    const users = [...MOCK_USERS].sort((a, b) => b.xp - a.xp);
-    renderPodium(users.slice(0, 3));
+    if (!allUsers.length) return;
+    // Tab filtering (all tabs use full list here; extend for weekly/monthly with timestamps)
+    const users = [...allUsers];
+    if (users.length >= 3) renderPodium(users.slice(0, 3));
     renderTable(users);
   }
 
   function renderPodium(top3) {
-    const order = [top3[1], top3[0], top3[2]]; // silver, gold, bronze visual order
-    const ranks = [2, 1, 3];
     const medals = ['🥈', '🥇', '🥉'];
-
-    document.getElementById('podium').innerHTML = order.map((u, i) => `
-      <div class="podium-slot">
-        <div class="podium-avatar">${u.name[0]}</div>
-        <div class="podium-name">${u.name}</div>
+    // Visual order: 2nd, 1st, 3rd
+    const order  = [top3[1], top3[0], top3[2]];
+    document.getElementById('podium').innerHTML = order.map((u, i) => {
+      const color = AVATAR_COLORS[allUsers.indexOf(u) % AVATAR_COLORS.length];
+      const isMe  = currentUser && u.username === currentUser;
+      return `<div class="podium-slot">
+        <div class="podium-avatar" style="background: linear-gradient(135deg, ${color}, ${color}88)">
+          ${u.name[0].toUpperCase()}${isMe ? '<span style="position:absolute;top:-4px;right:-4px;font-size:0.5rem;background:var(--accent);border-radius:3px;padding:1px 3px;color:white">you</span>' : ''}
+        </div>
+        <div class="podium-name">${esc(u.name)}</div>
         <div class="podium-xp">${u.xp.toLocaleString()} XP</div>
         <div class="podium-base">${medals[i]}</div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
   function renderTable(users) {
+    const medals    = ['🥇','🥈','🥉'];
     const rankClass = i => i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-    document.getElementById('lb-body').innerHTML = users.map((u, i) => `
-      <div class="lb-row">
-        <div class="lb-rank ${rankClass(i)}">${i < 3 ? ['🥇','🥈','🥉'][i] : `#${i+1}`}</div>
+    document.getElementById('lb-body').innerHTML = users.map((u, i) => {
+      const color = AVATAR_COLORS[i % AVATAR_COLORS.length];
+      const isMe  = currentUser && u.username === currentUser;
+      return `<div class="lb-row${isMe ? ' me' : ''}">
+        <div class="lb-rank ${rankClass(i)}">${i < 3 ? medals[i] : '#' + (i + 1)}</div>
         <div class="lb-user">
-          <div class="lb-avatar" style="background: linear-gradient(135deg, ${u.color}, ${u.color}88)">${u.name[0]}</div>
+          <div class="lb-avatar" style="background: linear-gradient(135deg, ${color}, ${color}88)">
+            ${u.name[0].toUpperCase()}
+          </div>
           <div>
-            <div class="lb-username">${u.name}</div>
-            <div class="lb-handle">@${u.handle}</div>
+            <div class="lb-username">${esc(u.name)}${isMe ? ' <span style="font-size:0.7rem;background:var(--accent);color:white;padding:1px 5px;border-radius:4px;vertical-align:middle">you</span>' : ''}</div>
+            <div class="lb-handle">@${esc(u.username)}</div>
           </div>
         </div>
         <div class="lb-xp">${u.xp.toLocaleString()} XP</div>
         <div class="lb-lessons">${u.lessons} done</div>
         <div class="lb-streak">🔥 ${u.streak}</div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
   }
 
-  renderLeaderboard();
+  function esc(s) {
+    return String(s || '')
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
 
-  // ── TODO: Replace MOCK_USERS with Firebase Realtime DB read ──
-  // ── Example:
-  //   const ref = firebase.database().ref('users');
-  //   ref.orderByChild('xp').limitToLast(100).once('value', snap => {
-  //     const users = [];
-  //     snap.forEach(child => users.unshift({ ...child.val(), uid: child.key }));
-  //     renderPodium(users.slice(0, 3));
-  //     renderTable(users);
-  //   });
+  loadLeaderboard();
 </script>
 </body>
 </html>
