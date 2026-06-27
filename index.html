@@ -1,245 +1,1244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AILearn — Master Artificial Intelligence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg0: #07090F;
+    --bg1: #0A0E1A;
+    --bg2: #0F1525;
+    --bg3: #151C30;
+    --bg4: #1C2540;
+    --accent: #6C7FFF;
+    --accent2: #8B9FFF;
+    --cyan: #22D3EE;
+    --coral: #FF6B6B;
+    --gold: #FFB84D;
+    --green: #34D399;
+    --text0: #F0F4FF;
+    --text1: #C8D0E8;
+    --text2: #8892AA;
+    --text3: #4A5368;
+    --border: rgba(108,127,255,0.15);
+    --border2: rgba(255,255,255,0.06);
+    --glow: rgba(108,127,255,0.25);
+
+    --font-d: 'Sora', sans-serif;
+    --font-b: 'DM Sans', sans-serif;
+    --font-m: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg0);
+    color: var(--text1);
+    font-family: var(--font-b);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 64px;
+    background: rgba(7,9,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-d);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text0);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo-mark {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+    color: white;
+    font-family: var(--font-m);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    background: none; border: none; cursor: pointer;
+    color: var(--text2);
+    font-family: var(--font-b);
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .nav-link:hover { color: var(--text0); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-family: var(--font-d);
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    padding-top: 64px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+    padding-left: 8%;
+    padding-right: 4%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(108,127,255,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(34,211,238,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-left { position: relative; z-index: 1; }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(108,127,255,0.1);
+    border: 1px solid var(--border);
+    color: var(--accent2);
+    font-family: var(--font-m);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.38rem 0.85rem;
+    border-radius: 100px;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero-h1 {
+    font-family: var(--font-d);
+    font-size: clamp(2.4rem, 4.5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    color: var(--text0);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-h1 .grad {
+    background: linear-gradient(135deg, var(--accent2) 0%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-h1 .muted {
+    color: var(--text2);
+    font-weight: 300;
+    font-size: 0.62em;
+    display: block;
+    margin-top: 0.4rem;
+    letter-spacing: -0.01em;
+    -webkit-text-fill-color: var(--text2);
+  }
+
+  .hero-p {
+    color: var(--text2);
+    font-size: 1rem;
+    line-height: 1.75;
+    max-width: 480px;
+    margin-bottom: 2.25rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.85rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, #5B6FEF 100%);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 1.85rem;
+    border-radius: 10px;
+    font-family: var(--font-d);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(108,127,255,0.3);
+    letter-spacing: 0.005em;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(108,127,255,0.45); }
+
+  .btn-ghost {
+    background: none;
+    color: var(--text1);
+    border: 1px solid var(--border);
+    padding: 0.85rem 1.6rem;
+    border-radius: 10px;
+    font-family: var(--font-d);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--text0); }
+
+  .hero-meta {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .hmi-num {
+    font-family: var(--font-d);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text0);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .hmi-label {
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── CURRICULUM GRAPH (Hero Right) ── */
+  .hero-right {
+    position: relative;
+    height: 580px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #academy-graph {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── SECTION SCAFFOLDING ── */
+  section {
+    padding: 6rem 8%;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .section-eyebrow {
+    font-family: var(--font-m);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.85rem;
+  }
+
+  .section-title {
+    font-family: var(--font-d);
+    font-size: clamp(1.75rem, 3vw, 2.6rem);
+    font-weight: 700;
+    color: var(--text0);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-sub {
+    color: var(--text2);
+    font-size: 1rem;
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  .section-header { margin-bottom: 3rem; }
+
+  /* ── ACADEMIES GRID ── */
+  #academies { padding-top: 0; }
+
+  .academies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .academy-card {
+    background: var(--bg1);
+    padding: 1.5rem;
+    position: relative;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .academy-card:hover { background: var(--bg2); }
+
+  .academy-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .academy-card:hover::after { opacity: 1; }
+
+  .ac-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+  }
+
+  .ac-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .ac-diff {
+    font-family: var(--font-m);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.55rem;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+
+  .diff-beginner { background: rgba(52,211,153,0.12); color: var(--green); }
+  .diff-intermediate { background: rgba(255,184,77,0.12); color: var(--gold); }
+  .diff-advanced { background: rgba(108,127,255,0.12); color: var(--accent2); }
+  .diff-expert { background: rgba(255,107,107,0.12); color: var(--coral); }
+
+  .ac-name {
+    font-family: var(--font-d);
+    font-size: 0.97rem;
+    font-weight: 600;
+    color: var(--text0);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .ac-desc {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .ac-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ac-lessons {
+    font-family: var(--font-m);
+    font-size: 0.7rem;
+    color: var(--text3);
+  }
+
+  .ac-prereqs {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .prereq-tag {
+    font-family: var(--font-m);
+    font-size: 0.6rem;
+    background: var(--bg4);
+    color: var(--text3);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+
+  .prereq-tag.none {
+    color: var(--green);
+    background: rgba(52,211,153,0.08);
+  }
+
+  /* ── FEATURES ── */
+  #features { background: var(--bg1); border-radius: 0; padding: 6rem 8%; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .feature-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--border);
+    transform: translateY(-3px);
+  }
+
+  .feature-icon {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-title {
+    font-family: var(--font-d);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text0);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-desc {
+    font-size: 0.84rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ── AL TUTOR ── */
+  .al-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .al-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    color: var(--cyan);
+    font-family: var(--font-m);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.38rem 0.85rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .al-chat-window {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .al-chat-topbar {
+    background: var(--bg3);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .al-avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    font-family: var(--font-m);
+    flex-shrink: 0;
+  }
+
+  .al-name {
+    font-family: var(--font-d);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text0);
+  }
+
+  .al-status {
+    font-size: 0.72rem;
+    color: var(--green);
+  }
+
+  .al-messages-list {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .al-msg-row {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+  }
+
+  .al-msg-row.user { flex-direction: row-reverse; }
+
+  .al-bubble {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 12px 12px 12px 4px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text1);
+    line-height: 1.6;
+    max-width: 75%;
+  }
+
+  .al-msg-row.user .al-bubble {
+    background: rgba(108,127,255,0.15);
+    border-color: rgba(108,127,255,0.2);
+    border-radius: 12px 12px 4px 12px;
+    color: var(--text0);
+  }
+
+  .al-input-row {
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid var(--border2);
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .al-input-mock {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8rem;
+    color: var(--text3);
+    font-family: var(--font-b);
+  }
+
+  .al-send-mock {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-family: var(--font-d);
+    font-weight: 600;
+    cursor: default;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps-track {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    position: relative;
+    margin-top: 3rem;
+  }
+
+  .steps-track::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), var(--accent), var(--border), transparent);
+  }
+
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+    position: relative;
+  }
+
+  .step-num {
+    width: 56px; height: 56px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-d);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 1;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .step-item:hover .step-num {
+    border-color: var(--accent);
+    background: rgba(108,127,255,0.08);
+  }
+
+  .step-title {
+    font-family: var(--font-d);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text0);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .step-desc {
+    font-size: 0.78rem;
+    color: var(--text3);
+    line-height: 1.65;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border2);
+    padding: 4rem 8% 2.5rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-brand-desc {
+    font-size: 0.83rem;
+    color: var(--text3);
+    line-height: 1.75;
+    margin-top: 1rem;
+    max-width: 280px;
+  }
+
+  .footer-col-title {
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 1.1rem;
+  }
+
+  .footer-link {
+    display: block;
+    color: var(--text2);
+    font-size: 0.84rem;
+    margin-bottom: 0.65rem;
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--font-b);
+    padding: 0;
+    text-align: left;
+  }
+
+  .footer-link:hover { color: var(--text0); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border2);
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text3);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 1.25rem;
+  }
+
+  .social-btn {
+    width: 34px; height: 34px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    color: var(--text3);
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .social-btn:hover { border-color: var(--border); color: var(--text0); }
+
+  /* ── FULL-WIDTH SECTION WRAPPERS ── */
+  .full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border2);
+    margin: 0;
+  }
+
+  /* ── LEVEL TAGS ── */
+  .level-legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    align-items: center;
+  }
+  .level-legend-label {
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-right: 0.25rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 5rem 6% 3rem;
+      min-height: auto;
+    }
+    .hero-right { height: 340px; }
+    .al-section { grid-template-columns: 1fr; gap: 2.5rem; }
+    .steps-track { grid-template-columns: 1fr; gap: 1.5rem; }
+    .steps-track::before { display: none; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .nav-links { gap: 1rem; }
+    section { padding: 4rem 6%; }
+    #features { padding: 4rem 6%; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links .nav-link:not(.nav-cta) { display: none; }
+    .hero-h1 { font-size: 2rem; }
+    .footer-top { grid-template-columns: 1fr; }
+    .academies-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
 <body>
 
-<div class="bg-grid"></div>
-<div class="bg-glow glow1"></div>
-<div class="bg-glow glow2"></div>
-
-<nav class="navbar">
-
-<div class="logo">
-<div class="logo-icon">◈</div>
-<div>
-<div class="logo-title">AILearn</div>
-<div class="logo-sub">Master Artificial Intelligence</div>
-</div>
-</div>
-
-<div class="nav-links">
-
-<a href="#curriculum">Curriculum</a>
-
-<a href="#features">Features</a>
-
-<a href="#projects">Projects</a>
-
-<a href="#pricing">Pricing</a>
-
-<button class="btn-login">
-Sign In
-</button>
-
-<button class="btn-start">
-Start Free
-</button>
-
-</div>
-
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">◈</div>
+    AILearn
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="document.getElementById('academies').scrollIntoView({behavior:'smooth'})">Academies</button>
+    <button class="nav-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</button>
+    <button class="nav-link" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">How It Works</button>
+    <button class="nav-link nav-cta">Get Started Free</button>
+  </div>
 </nav>
 
-<section class="hero">
-
-<div class="hero-left">
-
-<div class="hero-pill">
-
-✨ The Complete AI Learning Platform
-
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">AI Education Platform · 16 Academies</div>
+    <h1 class="hero-h1">
+      <span class="grad">Master Artificial</span><br>
+      <span class="grad">Intelligence.</span>
+      <span class="muted">From foundations to frontier research.</span>
+    </h1>
+    <p class="hero-p">
+      A structured path through 16 specialized academies — from AI basics and Python to RAG systems, Agents, and cutting-edge research. Built for practitioners, not passive learners.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">Start Learning Free →</button>
+      <button class="btn-ghost">Sign In</button>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hmi-num">16</div>
+        <div class="hmi-label">Academies</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hmi-num">700+</div>
+        <div class="hmi-label">Lessons</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hmi-num">4</div>
+        <div class="hmi-label">Levels</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hmi-num">∞</div>
+        <div class="hmi-label">AL Sessions</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <canvas id="academy-graph"></canvas>
+  </div>
 </div>
 
-<h1>
-
-Learn <span>Artificial Intelligence</span>
-
-Like You're Playing a Game.
-
-</h1>
-
-<p>
-
-Master AI through interactive lessons, coding challenges,
-real-world projects, AI tutors, achievements, and guided
-learning paths.
-
-No fluff.
-
-Just skills.
-
-</p>
-
-<div class="hero-buttons">
-
-<button class="btn-primary">
-
-Start Learning →
-
-</button>
-
-<button class="btn-secondary">
-
-View Curriculum
-
-</button>
-
+<!-- ACADEMIES -->
+<div style="padding: 0 8%; max-width: 1400px; margin: 0 auto; width: 100%;">
+  <div id="academies" style="padding-top: 5rem; padding-bottom: 1rem;">
+    <div class="section-header">
+      <div class="section-eyebrow">The Full Curriculum</div>
+      <h2 class="section-title">16 Academies. One Mastery Path.</h2>
+      <p class="section-sub">Each academy is a self-contained discipline with structured lessons, quizzes, and projects. Prerequisites connect them into a coherent journey.</p>
+    </div>
+    <div class="level-legend">
+      <span class="level-legend-label">Difficulty:</span>
+      <span class="ac-diff diff-beginner">Beginner</span>
+      <span class="ac-diff diff-intermediate">Intermediate</span>
+      <span class="ac-diff diff-advanced">Advanced</span>
+      <span class="ac-diff diff-expert">Expert</span>
+    </div>
+    <div class="academies-grid" id="academies-grid"></div>
+  </div>
 </div>
 
-<div class="hero-stats">
-
-<div class="stat">
-
-<div class="number">16</div>
-
-<div class="label">Academies</div>
-
+<!-- FEATURES -->
+<div id="features" class="full-width" style="background: var(--bg1); margin-top: 5rem;">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 6rem 8%;">
+    <div class="section-header">
+      <div class="section-eyebrow">Platform Features</div>
+      <h2 class="section-title">Everything You Need to Master AI</h2>
+      <p class="section-sub">From theory to practice — AILearn is a complete education ecosystem, not just a course.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Structured Academy Path</div>
+        <div class="feature-desc">16 academies with prerequisite gates — build real depth by progressing through a deliberately ordered curriculum, not a random playlist.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">◈</div>
+        <div class="feature-title">AL — Your Personal AI Tutor</div>
+        <div class="feature-desc">Meet AL, your built-in AI guide. Ask questions, get hints, explore concepts. AL knows when to guide and when to let you figure it out yourself.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚗️</div>
+        <div class="feature-title">Live Code Sandbox</div>
+        <div class="feature-desc">Write and run AI code directly in your browser. Pre-loaded examples, real Python execution, and instant feedback on every experiment.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧪</div>
+        <div class="feature-title">Prompt Engineering Lab</div>
+        <div class="feature-desc">Practice prompting with real AI responses. Learn zero-shot, few-shot, chain-of-thought, and RAG patterns with live feedback.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <div class="feature-title">Real AI Projects</div>
+        <div class="feature-desc">Guided projects that span multiple academies — from building sentiment classifiers to designing full RAG knowledge bases.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">XP, Badges & Leaderboard</div>
+        <div class="feature-desc">Earn XP, unlock achievement badges, and climb the global leaderboard. Progress is persistent, measurable, and celebrated.</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<div class="stat">
-
-<div class="number">700+</div>
-
-<div class="label">Lessons</div>
-
-</div>
-
-<div class="stat">
-
-<div class="number">120+</div>
-
-<div class="label">Projects</div>
-
-</div>
-
-<div class="stat">
-
-<div class="number">∞</div>
-
-<div class="label">AI Tutor</div>
-
-</div>
-
-</div>
-
-</div>
-
-<div class="hero-right">
-
-<div class="dashboard">
-
-<div class="dashboard-top">
-
-<div class="dashboard-title">
-
-Continue Learning
-
-</div>
-
-<div class="xp">
-
-XP 4,250
-
-</div>
-
-</div>
-
-<div class="course-card">
-
-<div class="course-icon">🧠</div>
-
-<div>
-
-<h3>AI Foundations</h3>
-
-<p>Lesson 38 / 45</p>
-
-</div>
-
-<div class="progress">
-
-84%
-
-</div>
-
-</div>
-
-<div class="progress-bar">
-
-<div class="fill"></div>
-
-</div>
-
-<div class="dashboard-grid">
-
-<div class="small-card">
-
-🔥
-
-<h4>18</h4>
-
-<p>Day Streak</p>
-
-</div>
-
-<div class="small-card">
-
-🏆
-
-<h4>42</h4>
-
-<p>Badges</p>
-
-</div>
-
-<div class="small-card">
-
-🤖
-
-<h4>AL</h4>
-
-<p>AI Tutor</p>
-
-</div>
-
-<div class="small-card">
-
-🚀
-
-<h4>17</h4>
-
-<p>Projects</p>
-
-</div>
-
-</div>
-
-<div class="lesson-preview">
-
-<div class="lesson-header">
-
-Current Lesson
-
-</div>
-
-<div class="lesson-title">
-
-How Transformers Understand Language
-
-</div>
-
-<div class="lesson-time">
-
-⏱ 9 min
-
-</div>
-
-<button class="continue">
-
-Continue →
-
-</button>
-
-</div>
-
-</div>
-
-</div>
-
+<!-- AL TUTOR SECTION -->
+<section>
+  <div class="al-section">
+    <div>
+      <div class="al-badge">◈ Meet AL</div>
+      <h2 class="section-title">Your AI Tutor,<br>Built Right In.</h2>
+      <p class="section-sub" style="margin-bottom: 1.5rem;">AL is a purpose-built AI assistant that lives inside AILearn. Ask it anything about AI — from "what is a tensor?" to "explain the attention mechanism in plain English." AL guides your learning without doing your homework for you.</p>
+      <button class="btn-primary">Meet AL — Get Started →</button>
+    </div>
+    <div class="al-chat-window">
+      <div class="al-chat-topbar">
+        <div class="al-avatar">◈</div>
+        <div>
+          <div class="al-name">AL — AI Tutor</div>
+          <div class="al-status">● Online · Ready to help</div>
+        </div>
+      </div>
+      <div class="al-messages-list">
+        <div class="al-msg-row user">
+          <div class="al-avatar" style="background: var(--bg4); color: var(--text2); font-size: 0.7rem;">U</div>
+          <div class="al-bubble">Why does my model keep overfitting no matter what I try?</div>
+        </div>
+        <div class="al-msg-row">
+          <div class="al-avatar">◈</div>
+          <div class="al-bubble">Overfitting means your model is memorizing training data instead of generalizing. A few things to check: How does your training set size compare to model complexity? Are you using dropout or weight decay? What does your validation curve look like? 💡</div>
+        </div>
+        <div class="al-msg-row user">
+          <div class="al-avatar" style="background: var(--bg4); color: var(--text2); font-size: 0.7rem;">U</div>
+          <div class="al-bubble">I'm not using dropout at all. Should I add it?</div>
+        </div>
+        <div class="al-msg-row">
+          <div class="al-avatar">◈</div>
+          <div class="al-bubble">Yes! Dropout randomly deactivates neurons during training, forcing the network to learn redundant representations. It's one of the most effective regularization tools we have. The Deep Learning academy covers this in detail — start there and come back with questions 🎯</div>
+        </div>
+      </div>
+      <div class="al-input-row">
+        <div class="al-input-mock">Ask AL anything about AI…</div>
+        <button class="al-send-mock">Send</button>
+      </div>
+    </div>
+  </div>
 </section>
+
+<!-- HOW IT WORKS -->
+<div id="how-it-works" class="full-width" style="background: var(--bg1);">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 6rem 8%;">
+    <div class="section-header" style="text-align: center; max-width: 600px; margin-left: auto; margin-right: auto;">
+      <div class="section-eyebrow">The Process</div>
+      <h2 class="section-title">From Sign-Up to Expertise</h2>
+      <p class="section-sub" style="margin: 0 auto;">A clear, structured path with measurable milestones and no gatekeeping.</p>
+    </div>
+    <div class="steps-track">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-title">Create Account</div>
+        <div class="step-desc">Sign up with Google or a username. Progress saves automatically to the cloud — pick up anywhere.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-title">Start at Foundations</div>
+        <div class="step-desc">Begin with AI Foundations — the prerequisite that unlocks nearly every other academy on the platform.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-title">Learn & Practice</div>
+        <div class="step-desc">Read, code, quiz. Ask AL when stuck. XP compounds as you unlock each next lesson.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-title">Unlock Academies</div>
+        <div class="step-desc">Prerequisites gate advanced academies — finish Machine Learning to unlock Deep Learning, NLP, Vision, and more.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-title">Earn & Ship</div>
+        <div class="step-desc">Collect badges, climb the leaderboard, and ship real AI projects that prove your skills.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA SECTION -->
+<section style="text-align: center;">
+  <div class="section-eyebrow" style="text-align: center;">Ready?</div>
+  <h2 class="section-title" style="text-align: center; max-width: 600px; margin: 0 auto 1rem;">Start Your AI Journey Today</h2>
+  <p class="section-sub" style="text-align: center; margin: 0 auto 2.5rem;">
+    Free to start. No credit card. Begin with AI Foundations and unlock the full 16-academy curriculum as you progress.
+  </p>
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <button class="btn-primary" style="font-size: 1rem; padding: 1rem 2.25rem;">Start Learning Free →</button>
+    <button class="btn-ghost" style="font-size: 1rem; padding: 1rem 2rem;">View Curriculum</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="nav-logo" style="margin-bottom: 0.25rem;">
+        <div class="nav-logo-mark">◈</div>
+        AILearn
+      </div>
+      <div class="footer-brand-desc">The next-generation AI education platform. 16 specialized academies take you from AI fundamentals to production-ready expertise — at your own pace, with your own AI tutor.</div>
+      <div class="social-links">
+        <a href="https://x.com" target="_blank" class="social-btn" title="X/Twitter">𝕏</a>
+        <a href="https://github.com" target="_blank" class="social-btn" title="GitHub">⌨</a>
+        <a href="https://discord.com" target="_blank" class="social-btn" title="Discord">💬</a>
+        <a href="https://linkedin.com" target="_blank" class="social-btn" title="LinkedIn">in</a>
+        <a href="https://youtube.com" target="_blank" class="social-btn" title="YouTube">▶</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <button class="footer-link">Features</button>
+      <button class="footer-link">Academies</button>
+      <button class="footer-link">Sign Up</button>
+      <button class="footer-link">Sign In</button>
+    </div>
+    <div>
+      <div class="footer-col-title">Academies</div>
+      <button class="footer-link">AI Foundations</button>
+      <button class="footer-link">Prompt Engineering</button>
+      <button class="footer-link">Machine Learning</button>
+      <button class="footer-link">Deep Learning</button>
+      <button class="footer-link">AI Agents</button>
+      <button class="footer-link">RAG</button>
+    </div>
+    <div>
+      <div class="footer-col-title">Community</div>
+      <button class="footer-link">Leaderboard</button>
+      <button class="footer-link">Discord</button>
+      <button class="footer-link">GitHub</button>
+      <button class="footer-link">Blog</button>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 AILearn. Built with ◈ and a lot of gradient descent.</span>
+    <span>Privacy · Terms · Contact</span>
+  </div>
+</footer>
+
+<script>
+// ── CURRICULUM DATA (inline from curriculum.js) ──
+const ACADEMIES = [
+  { id:"foundations", name:"AI Foundations", icon:"🧠", lessons:45, difficulty:"beginner", prereqs:["None"], description:"Build a complete mental model of artificial intelligence." },
+  { id:"prompt-engineering", name:"Prompt Engineering", icon:"✍️", lessons:50, difficulty:"beginner", prereqs:["AI Foundations"], description:"Learn how to communicate effectively with AI systems." },
+  { id:"python-for-ai", name:"Python for AI", icon:"🐍", lessons:60, difficulty:"beginner", prereqs:["AI Foundations"], description:"Master Python for building AI systems." },
+  { id:"machine-learning", name:"Machine Learning", icon:"📊", lessons:60, difficulty:"intermediate", prereqs:["Python for AI","Data Science"], description:"Learn classical machine learning algorithms." },
+  { id:"deep-learning", name:"Deep Learning", icon:"🧬", lessons:70, difficulty:"advanced", prereqs:["Machine Learning"], description:"Neural networks and modern deep learning." },
+  { id:"nlp", name:"Natural Language Processing", icon:"💬", lessons:40, difficulty:"advanced", prereqs:["Deep Learning"], description:"Master NLP from tokenization to transformers." },
+  { id:"computer-vision", name:"Computer Vision", icon:"👁️", lessons:40, difficulty:"advanced", prereqs:["Deep Learning"], description:"Build systems that understand visual data." },
+  { id:"generative-ai", name:"Generative AI", icon:"🎨", lessons:50, difficulty:"advanced", prereqs:["Deep Learning"], description:"Create images, text, audio, and more with AI." },
+  { id:"agents", name:"AI Agents", icon:"🤖", lessons:60, difficulty:"advanced", prereqs:["Prompt Engineering","Generative AI"], description:"Build autonomous AI systems that take actions." },
+  { id:"rag", name:"Retrieval Augmented Generation", icon:"📚", lessons:35, difficulty:"advanced", prereqs:["Embeddings","AI Agents"], description:"Ground LLMs with real-time knowledge retrieval." },
+  { id:"fine-tuning", name:"Fine Tuning", icon:"⚙️", lessons:35, difficulty:"advanced", prereqs:["Deep Learning"], description:"Adapt pre-trained models for specialized tasks." },
+  { id:"mlops", name:"MLOps", icon:"🚀", lessons:40, difficulty:"advanced", prereqs:["Machine Learning"], description:"Deploy, monitor, and maintain ML systems in production." },
+  { id:"product-development", name:"AI Product Development", icon:"🏗️", lessons:30, difficulty:"intermediate", prereqs:["Prompt Engineering"], description:"Ship AI-powered products users love." },
+  { id:"ai-business", name:"AI Business", icon:"💼", lessons:25, difficulty:"intermediate", prereqs:["AI Foundations"], description:"Apply AI strategy to real business problems." },
+  { id:"ethics", name:"AI Ethics & Safety", icon:"🛡️", lessons:25, difficulty:"intermediate", prereqs:["AI Foundations"], description:"Build responsible and safe AI systems." },
+  { id:"research", name:"AI Research", icon:"🔬", lessons:30, difficulty:"expert", prereqs:["Deep Learning"], description:"Read papers, run experiments, push boundaries." },
+];
+
+// ── RENDER ACADEMIES GRID ──
+function renderAcademies() {
+  const grid = document.getElementById('academies-grid');
+  grid.innerHTML = ACADEMIES.map(a => {
+    const prereqHTML = a.prereqs[0] === 'None'
+      ? `<span class="prereq-tag none">No prereqs</span>`
+      : a.prereqs.map(p => `<span class="prereq-tag">${p}</span>`).join('');
+
+    return `
+      <div class="academy-card">
+        <div class="ac-header">
+          <div class="ac-icon">${a.icon}</div>
+          <span class="ac-diff diff-${a.difficulty}">${a.difficulty}</span>
+        </div>
+        <div class="ac-name">${a.name}</div>
+        <div class="ac-desc">${a.description || ''}</div>
+        <div class="ac-footer">
+          <div class="ac-lessons">${a.lessons} lessons</div>
+          <div class="ac-prereqs">${prereqHTML}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── HERO GRAPH ──
+function renderGraph() {
+  const canvas = document.getElementById('academy-graph');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // Node layout — manually positioned to reflect dependency flow
+  const nodes = {
+    'foundations':          { x: 0.5,  y: 0.08 },
+    'prompt-engineering':   { x: 0.18, y: 0.26 },
+    'python-for-ai':        { x: 0.82, y: 0.26 },
+    'machine-learning':     { x: 0.75, y: 0.44 },
+    'ai-business':          { x: 0.22, y: 0.44 },
+    'ethics':               { x: 0.5,  y: 0.38 },
+    'product-development':  { x: 0.1,  y: 0.56 },
+    'deep-learning':        { x: 0.68, y: 0.6  },
+    'agents':               { x: 0.25, y: 0.65 },
+    'mlops':                { x: 0.88, y: 0.55 },
+    'fine-tuning':          { x: 0.55, y: 0.76 },
+    'nlp':                  { x: 0.35, y: 0.8  },
+    'computer-vision':      { x: 0.7,  y: 0.82 },
+    'generative-ai':        { x: 0.12, y: 0.78 },
+    'rag':                  { x: 0.42, y: 0.94 },
+    'research':             { x: 0.82, y: 0.94 },
+  };
+
+  // Map prereqs to ids
+  const nameToId = {};
+  ACADEMIES.forEach(a => nameToId[a.name] = a.id);
+
+  const edges = [];
+  ACADEMIES.forEach(a => {
+    a.prereqs.forEach(p => {
+      if (p !== 'None' && nameToId[p] && nodes[a.id] && nodes[nameToId[p]]) {
+        edges.push([nameToId[p], a.id]);
+      }
+    });
+  });
+
+  const diffColors = {
+    beginner:     '#34D399',
+    intermediate: '#FFB84D',
+    advanced:     '#8B9FFF',
+    expert:       '#FF6B6B',
+  };
+
+  function nodeXY(id) {
+    const n = nodes[id];
+    return [n.x * W, n.y * H];
+  }
+
+  // Draw edges
+  edges.forEach(([from, to]) => {
+    const [x1, y1] = nodeXY(from);
+    const [x2, y2] = nodeXY(to);
+    const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+    grad.addColorStop(0, 'rgba(108,127,255,0.35)');
+    grad.addColorStop(1, 'rgba(34,211,238,0.15)');
+    ctx.beginPath();
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 6]);
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Draw nodes
+  ACADEMIES.forEach(a => {
+    if (!nodes[a.id]) return;
+    const [x, y] = nodeXY(a.id);
+    const color = diffColors[a.difficulty] || '#8B9FFF';
+    const r = 20;
+
+    // Glow
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, r * 2.5);
+    glow.addColorStop(0, color + '30');
+    glow.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(x, y, r * 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+
+    // Circle fill
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#0F1525';
+    ctx.fill();
+
+    // Circle border
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Icon
+    ctx.font = `${r * 0.85}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(a.icon, x, y);
+
+    // Name label
+    const shortName = a.name.length > 18 ? a.name.slice(0, 16) + '…' : a.name;
+    ctx.font = `500 10px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(200,208,232,0.75)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(shortName, x, y + r + 4);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAcademies();
+  setTimeout(renderGraph, 50);
+});
+
+window.addEventListener('resize', () => {
+  setTimeout(renderGraph, 50);
+});
+</script>
+</body>
+</html>
