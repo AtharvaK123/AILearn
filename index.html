@@ -5,443 +5,1240 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AILearn — Master Artificial Intelligence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
-<link rel="stylesheet" href="styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg0: #07090F;
+    --bg1: #0A0E1A;
+    --bg2: #0F1525;
+    --bg3: #151C30;
+    --bg4: #1C2540;
+    --accent: #6C7FFF;
+    --accent2: #8B9FFF;
+    --cyan: #22D3EE;
+    --coral: #FF6B6B;
+    --gold: #FFB84D;
+    --green: #34D399;
+    --text0: #F0F4FF;
+    --text1: #C8D0E8;
+    --text2: #8892AA;
+    --text3: #4A5368;
+    --border: rgba(108,127,255,0.15);
+    --border2: rgba(255,255,255,0.06);
+    --glow: rgba(108,127,255,0.25);
+
+    --font-d: 'Sora', sans-serif;
+    --font-b: 'DM Sans', sans-serif;
+    --font-m: 'JetBrains Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg0);
+    color: var(--text1);
+    font-family: var(--font-b);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 64px;
+    background: rgba(7,9,15,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-d);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--text0);
+    letter-spacing: -0.02em;
+  }
+
+  .nav-logo-mark {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    font-size: 1rem;
+    color: white;
+    font-family: var(--font-m);
+    font-weight: 500;
+    flex-shrink: 0;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    background: none; border: none; cursor: pointer;
+    color: var(--text2);
+    font-family: var(--font-b);
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s;
+    letter-spacing: 0.01em;
+  }
+  .nav-link:hover { color: var(--text0); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1.25rem;
+    border-radius: 8px;
+    font-family: var(--font-d);
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.15s;
+    letter-spacing: 0.01em;
+  }
+  .nav-cta:hover { background: var(--accent2); transform: translateY(-1px); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    padding-top: 64px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+    padding-left: 8%;
+    padding-right: 4%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(108,127,255,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 40% at 20% 70%, rgba(34,211,238,0.07) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-left { position: relative; z-index: 1; }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(108,127,255,0.1);
+    border: 1px solid var(--border);
+    color: var(--accent2);
+    font-family: var(--font-m);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.38rem 0.85rem;
+    border-radius: 100px;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--cyan);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  .hero-h1 {
+    font-family: var(--font-d);
+    font-size: clamp(2.4rem, 4.5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    color: var(--text0);
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-h1 .grad {
+    background: linear-gradient(135deg, var(--accent2) 0%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-h1 .muted {
+    color: var(--text2);
+    font-weight: 300;
+    font-size: 0.62em;
+    display: block;
+    margin-top: 0.4rem;
+    letter-spacing: -0.01em;
+    -webkit-text-fill-color: var(--text2);
+  }
+
+  .hero-p {
+    color: var(--text2);
+    font-size: 1rem;
+    line-height: 1.75;
+    max-width: 480px;
+    margin-bottom: 2.25rem;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 0.85rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent) 0%, #5B6FEF 100%);
+    color: #fff;
+    border: none;
+    padding: 0.85rem 1.85rem;
+    border-radius: 10px;
+    font-family: var(--font-d);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 30px rgba(108,127,255,0.3);
+    letter-spacing: 0.005em;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 40px rgba(108,127,255,0.45); }
+
+  .btn-ghost {
+    background: none;
+    color: var(--text1);
+    border: 1px solid var(--border);
+    padding: 0.85rem 1.6rem;
+    border-radius: 10px;
+    font-family: var(--font-d);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--text0); }
+
+  .hero-meta {
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+  }
+
+  .hmi-num {
+    font-family: var(--font-d);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text0);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+
+  .hmi-label {
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  /* ── CURRICULUM GRAPH (Hero Right) ── */
+  .hero-right {
+    position: relative;
+    height: 580px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #academy-graph {
+    width: 100%;
+    height: 100%;
+  }
+
+  /* ── SECTION SCAFFOLDING ── */
+  section {
+    padding: 6rem 8%;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  .section-eyebrow {
+    font-family: var(--font-m);
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.85rem;
+  }
+
+  .section-title {
+    font-family: var(--font-d);
+    font-size: clamp(1.75rem, 3vw, 2.6rem);
+    font-weight: 700;
+    color: var(--text0);
+    line-height: 1.15;
+    letter-spacing: -0.025em;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-sub {
+    color: var(--text2);
+    font-size: 1rem;
+    line-height: 1.75;
+    max-width: 560px;
+  }
+
+  .section-header { margin-bottom: 3rem; }
+
+  /* ── ACADEMIES GRID ── */
+  #academies { padding-top: 0; }
+
+  .academies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .academy-card {
+    background: var(--bg1);
+    padding: 1.5rem;
+    position: relative;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .academy-card:hover { background: var(--bg2); }
+
+  .academy-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.25s;
+  }
+
+  .academy-card:hover::after { opacity: 1; }
+
+  .ac-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.85rem;
+  }
+
+  .ac-icon {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .ac-diff {
+    font-family: var(--font-m);
+    font-size: 0.65rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.55rem;
+    border-radius: 5px;
+    font-weight: 500;
+  }
+
+  .diff-beginner { background: rgba(52,211,153,0.12); color: var(--green); }
+  .diff-intermediate { background: rgba(255,184,77,0.12); color: var(--gold); }
+  .diff-advanced { background: rgba(108,127,255,0.12); color: var(--accent2); }
+  .diff-expert { background: rgba(255,107,107,0.12); color: var(--coral); }
+
+  .ac-name {
+    font-family: var(--font-d);
+    font-size: 0.97rem;
+    font-weight: 600;
+    color: var(--text0);
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+  }
+
+  .ac-desc {
+    font-size: 0.8rem;
+    color: var(--text2);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .ac-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .ac-lessons {
+    font-family: var(--font-m);
+    font-size: 0.7rem;
+    color: var(--text3);
+  }
+
+  .ac-prereqs {
+    display: flex;
+    gap: 0.3rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .prereq-tag {
+    font-family: var(--font-m);
+    font-size: 0.6rem;
+    background: var(--bg4);
+    color: var(--text3);
+    padding: 0.15rem 0.45rem;
+    border-radius: 4px;
+    letter-spacing: 0.03em;
+  }
+
+  .prereq-tag.none {
+    color: var(--green);
+    background: rgba(52,211,153,0.08);
+  }
+
+  /* ── FEATURES ── */
+  #features { background: var(--bg1); border-radius: 0; padding: 6rem 8%; }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .feature-card {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 1.75rem;
+    transition: border-color 0.25s, transform 0.25s;
+  }
+
+  .feature-card:hover {
+    border-color: var(--border);
+    transform: translateY(-3px);
+  }
+
+  .feature-icon {
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .feature-title {
+    font-family: var(--font-d);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text0);
+    margin-bottom: 0.6rem;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-desc {
+    font-size: 0.84rem;
+    color: var(--text2);
+    line-height: 1.7;
+  }
+
+  /* ── AL TUTOR ── */
+  .al-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: center;
+  }
+
+  .al-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(34,211,238,0.08);
+    border: 1px solid rgba(34,211,238,0.2);
+    color: var(--cyan);
+    font-family: var(--font-m);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.38rem 0.85rem;
+    border-radius: 100px;
+    margin-bottom: 1.5rem;
+  }
+
+  .al-chat-window {
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+    overflow: hidden;
+  }
+
+  .al-chat-topbar {
+    background: var(--bg3);
+    padding: 0.85rem 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .al-avatar {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: white;
+    font-family: var(--font-m);
+    flex-shrink: 0;
+  }
+
+  .al-name {
+    font-family: var(--font-d);
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text0);
+  }
+
+  .al-status {
+    font-size: 0.72rem;
+    color: var(--green);
+  }
+
+  .al-messages-list {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .al-msg-row {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+  }
+
+  .al-msg-row.user { flex-direction: row-reverse; }
+
+  .al-bubble {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 12px 12px 12px 4px;
+    padding: 0.7rem 1rem;
+    font-size: 0.82rem;
+    color: var(--text1);
+    line-height: 1.6;
+    max-width: 75%;
+  }
+
+  .al-msg-row.user .al-bubble {
+    background: rgba(108,127,255,0.15);
+    border-color: rgba(108,127,255,0.2);
+    border-radius: 12px 12px 4px 12px;
+    color: var(--text0);
+  }
+
+  .al-input-row {
+    padding: 0.85rem 1.25rem;
+    border-top: 1px solid var(--border2);
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .al-input-mock {
+    flex: 1;
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 0.55rem 0.9rem;
+    font-size: 0.8rem;
+    color: var(--text3);
+    font-family: var(--font-b);
+  }
+
+  .al-send-mock {
+    background: var(--accent);
+    color: white;
+    border: none;
+    padding: 0.55rem 1rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-family: var(--font-d);
+    font-weight: 600;
+    cursor: default;
+  }
+
+  /* ── HOW IT WORKS ── */
+  .steps-track {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0;
+    position: relative;
+    margin-top: 3rem;
+  }
+
+  .steps-track::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), var(--accent), var(--border), transparent);
+  }
+
+  .step-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+    position: relative;
+  }
+
+  .step-num {
+    width: 56px; height: 56px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-family: var(--font-d);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent2);
+    margin-bottom: 1.25rem;
+    position: relative;
+    z-index: 1;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .step-item:hover .step-num {
+    border-color: var(--accent);
+    background: rgba(108,127,255,0.08);
+  }
+
+  .step-title {
+    font-family: var(--font-d);
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text0);
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  .step-desc {
+    font-size: 0.78rem;
+    color: var(--text3);
+    line-height: 1.65;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border2);
+    padding: 4rem 8% 2.5rem;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-brand-desc {
+    font-size: 0.83rem;
+    color: var(--text3);
+    line-height: 1.75;
+    margin-top: 1rem;
+    max-width: 280px;
+  }
+
+  .footer-col-title {
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text3);
+    margin-bottom: 1.1rem;
+  }
+
+  .footer-link {
+    display: block;
+    color: var(--text2);
+    font-size: 0.84rem;
+    margin-bottom: 0.65rem;
+    text-decoration: none;
+    transition: color 0.2s;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--font-b);
+    padding: 0;
+    text-align: left;
+  }
+
+  .footer-link:hover { color: var(--text0); }
+
+  .footer-bottom {
+    border-top: 1px solid var(--border2);
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.78rem;
+    color: var(--text3);
+  }
+
+  .social-links {
+    display: flex;
+    gap: 0.65rem;
+    margin-top: 1.25rem;
+  }
+
+  .social-btn {
+    width: 34px; height: 34px;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    color: var(--text3);
+    font-size: 0.78rem;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .social-btn:hover { border-color: var(--border); color: var(--text0); }
+
+  /* ── FULL-WIDTH SECTION WRAPPERS ── */
+  .full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+  }
+
+  /* ── DIVIDER ── */
+  .section-divider {
+    width: 100%;
+    height: 1px;
+    background: var(--border2);
+    margin: 0;
+  }
+
+  /* ── LEVEL TAGS ── */
+  .level-legend {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 2rem;
+    align-items: center;
+  }
+  .level-legend-label {
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-right: 0.25rem;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero {
+      grid-template-columns: 1fr;
+      padding: 5rem 6% 3rem;
+      min-height: auto;
+    }
+    .hero-right { height: 340px; }
+    .al-section { grid-template-columns: 1fr; gap: 2.5rem; }
+    .steps-track { grid-template-columns: 1fr; gap: 1.5rem; }
+    .steps-track::before { display: none; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    .nav-links { gap: 1rem; }
+    section { padding: 4rem 6%; }
+    #features { padding: 4rem 6%; }
+  }
+
+  @media (max-width: 600px) {
+    .nav-links .nav-link:not(.nav-cta) { display: none; }
+    .hero-h1 { font-size: 2rem; }
+    .footer-top { grid-template-columns: 1fr; }
+    .academies-grid { grid-template-columns: 1fr; }
+  }
+</style>
 </head>
 <body>
 
-<!-- ════ LANDING PAGE ════ -->
-<div id="landing">
-  <nav class="land-nav">
-    <div class="land-logo"><div class="land-logo-icon">◈</div>AILearn</div>
-    <div class="land-nav-links">
-      <button class="land-nav-link" onclick="scrollToSection('features')">Features</button>
-      <button class="land-nav-link" onclick="scrollToSection('curriculum')">Curriculum</button>
-      <button class="land-nav-link" onclick="scrollToSection('how-it-works')">How It Works</button>
-      <button class="land-nav-link land-nav-cta" onclick="openAuthModal('signup')">Get Started Free</button>
-    </div>
-  </nav>
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">◈</div>
+    AILearn
+  </div>
+  <div class="nav-links">
+    <button class="nav-link" onclick="document.getElementById('academies').scrollIntoView({behavior:'smooth'})">Academies</button>
+    <button class="nav-link" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">Features</button>
+    <button class="nav-link" onclick="document.getElementById('how-it-works').scrollIntoView({behavior:'smooth'})">How It Works</button>
+    <button class="nav-link nav-cta">Get Started Free</button>
+  </div>
+</nav>
 
-  <div class="hero">
-    <div class="hero-grid"></div>
-    <div class="hero-orb hero-orb-1"></div>
-    <div class="hero-orb hero-orb-2"></div>
-    <div class="hero-orb hero-orb-3"></div>
-    <div class="hero-inner">
-      <div class="hero-badge">NEXT-GEN AI EDUCATION PLATFORM</div>
-      <h1 class="hero-h1">
-        <span class="grad">Master Artificial</span><br>
-        <span class="grad">Intelligence.</span><br>
-        <span style="color:var(--text2);font-weight:300;font-size:0.65em">Build it. Code it. Prompt it. Own it.</span>
-      </h1>
-      <p class="hero-sub">The only platform that takes you from AI fundamentals to production-ready skills — with a personal AI tutor, real projects, and a community that grows with you.</p>
-      <div class="hero-cta-row">
-        <button class="hero-cta-primary" onclick="openAuthModal('signup')">Start Learning Free →</button>
-        <button class="hero-cta-secondary" onclick="openAuthModal('signin')">Sign In</button>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">AI Education Platform · 16 Academies</div>
+    <h1 class="hero-h1">
+      <span class="grad">Master Artificial</span><br>
+      <span class="grad">Intelligence.</span>
+      <span class="muted">From foundations to frontier research.</span>
+    </h1>
+    <p class="hero-p">
+      A structured path through 16 specialized academies — from AI basics and Python to RAG systems, Agents, and cutting-edge research. Built for practitioners, not passive learners.
+    </p>
+    <div class="hero-actions">
+      <button class="btn-primary">Start Learning Free →</button>
+      <button class="btn-ghost">Sign In</button>
+    </div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">
+        <div class="hmi-num">16</div>
+        <div class="hmi-label">Academies</div>
       </div>
-      <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-num">4</div><div class="hero-stat-label">Learning Tracks</div></div>
-        <div class="hero-stat"><div class="hero-stat-num">30+</div><div class="hero-stat-label">In-Depth Lessons</div></div>
-        <div class="hero-stat"><div class="hero-stat-num">5</div><div class="hero-stat-label">Hands-On Projects</div></div>
-        <div class="hero-stat"><div class="hero-stat-num">15+</div><div class="hero-stat-label">Badges to Earn</div></div>
-        <div class="hero-stat"><div class="hero-stat-num">∞</div><div class="hero-stat-label">AL AI Tutor Sessions</div></div>
+      <div class="hero-meta-item">
+        <div class="hmi-num">700+</div>
+        <div class="hmi-label">Lessons</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hmi-num">4</div>
+        <div class="hmi-label">Levels</div>
+      </div>
+      <div class="hero-meta-item">
+        <div class="hmi-num">∞</div>
+        <div class="hmi-label">AL Sessions</div>
       </div>
     </div>
   </div>
+  <div class="hero-right">
+    <canvas id="academy-graph"></canvas>
+  </div>
+</div>
 
-  <div id="features" style="padding:0 4%;background:linear-gradient(180deg,transparent,var(--bg2) 50%,transparent)">
-    <div style="padding:4rem 0;max-width:1200px;margin:0 auto">
-      <div class="section-label">What You Get</div>
+<!-- ACADEMIES -->
+<div style="padding: 0 8%; max-width: 1400px; margin: 0 auto; width: 100%;">
+  <div id="academies" style="padding-top: 5rem; padding-bottom: 1rem;">
+    <div class="section-header">
+      <div class="section-eyebrow">The Full Curriculum</div>
+      <h2 class="section-title">16 Academies. One Mastery Path.</h2>
+      <p class="section-sub">Each academy is a self-contained discipline with structured lessons, quizzes, and projects. Prerequisites connect them into a coherent journey.</p>
+    </div>
+    <div class="level-legend">
+      <span class="level-legend-label">Difficulty:</span>
+      <span class="ac-diff diff-beginner">Beginner</span>
+      <span class="ac-diff diff-intermediate">Intermediate</span>
+      <span class="ac-diff diff-advanced">Advanced</span>
+      <span class="ac-diff diff-expert">Expert</span>
+    </div>
+    <div class="academies-grid" id="academies-grid"></div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div id="features" class="full-width" style="background: var(--bg1); margin-top: 5rem;">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 6rem 8%;">
+    <div class="section-header">
+      <div class="section-eyebrow">Platform Features</div>
       <h2 class="section-title">Everything You Need to Master AI</h2>
       <p class="section-sub">From theory to practice — AILearn is a complete education ecosystem, not just a course.</p>
-      <div class="features-grid">
-        <div class="feature-card"><div class="feature-icon">🧠</div><div class="feature-title">Expert-Level Curriculum</div><div class="feature-desc">30+ lessons across 4 tracks — built to the standards of top AI programs. Each lesson unlocks progressively, building real depth with no hand-waving.</div></div>
-        <div class="feature-card"><div class="feature-icon">🤖</div><div class="feature-title">AL — Your Personal AI Tutor</div><div class="feature-desc">Meet AL, your built-in AI guide. Ask questions, get hints, explore concepts. AL knows when to guide and when to let you figure it out yourself.</div></div>
-        <div class="feature-card"><div class="feature-icon">⚗️</div><div class="feature-title">Live Code Sandbox</div><div class="feature-desc">Write and run AI code directly in your browser. Pre-loaded examples, pattern-matched output simulation, and instant feedback on experiments.</div></div>
-        <div class="feature-card"><div class="feature-icon">🧪</div><div class="feature-title">Prompt Engineering Lab</div><div class="feature-desc">Practice prompt engineering with real AI responses. Learn what works and why — then apply those skills directly in the curriculum.</div></div>
-        <div class="feature-card"><div class="feature-icon">🚀</div><div class="feature-title">Real AI Projects</div><div class="feature-desc">Five guided projects that put your skills to work — from building a sentiment classifier to designing a RAG knowledge base.</div></div>
-        <div class="feature-card"><div class="feature-icon">🏆</div><div class="feature-title">XP, Levels & Leaderboard</div><div class="feature-desc">Earn XP, unlock badges, and climb the global leaderboard. Your level changes the platform's color scheme — a visual trophy for your progress.</div></div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-title">Structured Academy Path</div>
+        <div class="feature-desc">16 academies with prerequisite gates — build real depth by progressing through a deliberately ordered curriculum, not a random playlist.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">◈</div>
+        <div class="feature-title">AL — Your Personal AI Tutor</div>
+        <div class="feature-desc">Meet AL, your built-in AI guide. Ask questions, get hints, explore concepts. AL knows when to guide and when to let you figure it out yourself.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">⚗️</div>
+        <div class="feature-title">Live Code Sandbox</div>
+        <div class="feature-desc">Write and run AI code directly in your browser. Pre-loaded examples, real Python execution, and instant feedback on every experiment.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧪</div>
+        <div class="feature-title">Prompt Engineering Lab</div>
+        <div class="feature-desc">Practice prompting with real AI responses. Learn zero-shot, few-shot, chain-of-thought, and RAG patterns with live feedback.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <div class="feature-title">Real AI Projects</div>
+        <div class="feature-desc">Guided projects that span multiple academies — from building sentiment classifiers to designing full RAG knowledge bases.</div>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-title">XP, Badges & Leaderboard</div>
+        <div class="feature-desc">Earn XP, unlock achievement badges, and climb the global leaderboard. Progress is persistent, measurable, and celebrated.</div>
       </div>
     </div>
   </div>
+</div>
 
-  <div id="curriculum" class="curriculum-section">
-    <div class="curriculum-inner">
-      <div class="section-label" style="text-align:center">The Curriculum</div>
-      <h2 class="section-title" style="text-align:center">Four Tracks. One Mastery.</h2>
-      <p class="section-sub" style="text-align:center;max-width:560px;margin:0.5rem auto 0">Each track is a self-contained discipline — complete them all to become a full-stack AI practitioner.</p>
-      <div class="tracks-preview">
-        <div class="track-preview"><div class="tp-icon">🔨</div><div class="tp-title">Build AI</div><div class="tp-desc">Architecture, training loops, deployment. From zero to a working neural network.</div><div class="tp-pills"><span class="tp-pill">6 Lessons</span><span class="tp-pill">Neural Nets</span><span class="tp-pill">Transformers</span><span class="tp-pill">MLOps</span></div></div>
-        <div class="track-preview"><div class="tp-icon">💻</div><div class="tp-title">Code AI</div><div class="tp-desc">NumPy, PyTorch, APIs, Pipelines. Write production-quality ML code from day one.</div><div class="tp-pills"><span class="tp-pill">8 Lessons</span><span class="tp-pill">PyTorch</span><span class="tp-pill">scikit-learn</span><span class="tp-pill">LLM APIs</span></div></div>
-        <div class="track-preview"><div class="tp-icon">📊</div><div class="tp-title">Collect Data</div><div class="tp-desc">Scraping, labeling, cleaning, versioning. Master the craft of dataset creation.</div><div class="tp-pills"><span class="tp-pill">6 Lessons</span><span class="tp-pill">Annotation</span><span class="tp-pill">DVC</span><span class="tp-pill">Leakage</span></div></div>
-        <div class="track-preview"><div class="tp-icon">✨</div><div class="tp-title">Prompt AI</div><div class="tp-desc">Chain-of-thought, RAG, agents, evals. Engineer prompts like a professional.</div><div class="tp-pills"><span class="tp-pill">6 Lessons</span><span class="tp-pill">CoT</span><span class="tp-pill">RAG</span><span class="tp-pill">Agents</span></div></div>
-      </div>
+<!-- AL TUTOR SECTION -->
+<section>
+  <div class="al-section">
+    <div>
+      <div class="al-badge">◈ Meet AL</div>
+      <h2 class="section-title">Your AI Tutor,<br>Built Right In.</h2>
+      <p class="section-sub" style="margin-bottom: 1.5rem;">AL is a purpose-built AI assistant that lives inside AILearn. Ask it anything about AI — from "what is a tensor?" to "explain the attention mechanism in plain English." AL guides your learning without doing your homework for you.</p>
+      <button class="btn-primary">Meet AL — Get Started →</button>
     </div>
-  </div>
-
-  <div id="how-it-works" style="padding:4rem 4%;max-width:1200px;margin:0 auto;width:100%">
-    <div class="section-label" style="text-align:center">How It Works</div>
-    <h2 class="section-title">From Sign-Up to Expertise</h2>
-    <p class="section-sub">A clear path with measurable milestones, no gatekeeping.</p>
-    <div class="steps-row">
-      <div class="step-card"><div class="step-num">1</div><div class="step-title">Create Your Account</div><div class="step-desc">Sign up with Google or a username in seconds. Progress saves automatically to the cloud.</div></div>
-      <div class="step-card"><div class="step-num">2</div><div class="step-title">Choose a Track</div><div class="step-desc">Start with Build AI to understand foundations, or jump to the track that fits your goals.</div></div>
-      <div class="step-card"><div class="step-num">3</div><div class="step-title">Learn & Practice</div><div class="step-desc">Read, code, quiz. Ask AL if you're stuck. Complete lessons to unlock the next. XP compounds.</div></div>
-      <div class="step-card"><div class="step-num">4</div><div class="step-title">Ship Real Projects</div><div class="step-desc">Apply what you've learned in guided projects. Build a classifier, fine-tune a model, design a RAG system.</div></div>
-      <div class="step-card"><div class="step-num">5</div><div class="step-title">Earn & Climb</div><div class="step-desc">Collect badges, hit milestones, rise on the leaderboard. Your level unlocks new visual themes.</div></div>
-    </div>
-  </div>
-
-  <div style="padding:4rem 4%;max-width:1200px;margin:0 auto;width:100%">
-    <div class="al-teaser">
-      <div class="al-teaser-left">
-        <div class="al-badge">◈ MEET AL</div>
-        <h2>Your AI Tutor,<br>Built Right In.</h2>
-        <p>AL is a purpose-built AI assistant that lives inside AILearn. Ask it anything about AI — from "what is a tensor?" to "explain the attention mechanism." AL guides your learning without doing your homework for you.</p>
-        <button class="hero-cta-primary" onclick="openAuthModal('signup')" style="font-size:0.9rem;padding:0.75rem 1.5rem">Meet AL — Get Started →</button>
-      </div>
-      <div class="al-chat-mock">
-        <div class="al-msg"><div class="al-avatar usr">U</div><div class="al-bubble user-bubble">Why does my model keep overfitting no matter what I try?</div></div>
-        <div class="al-msg"><div class="al-avatar al">◈</div><div class="al-bubble al">Great question! Overfitting usually means memorizing training data. Check: How big is your training set vs model? Are you using dropout or weight decay? 💡</div></div>
-        <div class="al-msg"><div class="al-avatar usr">U</div><div class="al-bubble user-bubble">I'm not using dropout. Should I add it?</div></div>
-        <div class="al-msg"><div class="al-avatar al">◈</div><div class="al-bubble al">Dropout is one of the most effective tools here! It randomly "turns off" neurons during training. Build AI Lesson 5 covers this in depth — start there and come back with questions 🎯</div></div>
-      </div>
-    </div>
-  </div>
-
-  <footer class="land-footer">
-    <div class="footer-inner">
-      <div class="footer-brand">
-        <div class="footer-brand-logo"><div class="land-logo-icon" style="width:26px;height:26px;font-size:0.8rem">◈</div>AILearn</div>
-        <div class="footer-brand-desc">The next-generation AI education platform. Learn to build, code, collect data, and prompt AI — at your own pace, with your own AI tutor.</div>
-        <div class="social-row">
-          <a href="https://x.com" target="_blank" class="social-btn" title="Twitter/X">𝕏</a>
-          <a href="https://github.com" target="_blank" class="social-btn" title="GitHub">⌨</a>
-          <a href="https://discord.com" target="_blank" class="social-btn" title="Discord">💬</a>
-          <a href="https://linkedin.com" target="_blank" class="social-btn" title="LinkedIn">in</a>
-          <a href="https://youtube.com" target="_blank" class="social-btn" title="YouTube">▶</a>
-        </div>
-      </div>
-      <div class="footer-links">
+    <div class="al-chat-window">
+      <div class="al-chat-topbar">
+        <div class="al-avatar">◈</div>
         <div>
-          <div class="footer-col-title">Platform</div>
-          <div class="footer-link" onclick="scrollToSection('features')">Features</div>
-          <div class="footer-link" onclick="scrollToSection('curriculum')">Curriculum</div>
-          <div class="footer-link" onclick="openAuthModal('signup')">Sign Up</div>
-          <div class="footer-link" onclick="openAuthModal('signin')">Sign In</div>
-        </div>
-        <div>
-          <div class="footer-col-title">Tracks</div>
-          <div class="footer-link">Build AI</div>
-          <div class="footer-link">Code AI</div>
-          <div class="footer-link">Collect Data</div>
-          <div class="footer-link">Prompt AI</div>
-        </div>
-        <div>
-          <div class="footer-col-title">Community</div>
-          <div class="footer-link">Leaderboard</div>
-          <div class="footer-link">Discord</div>
-          <div class="footer-link">GitHub</div>
+          <div class="al-name">AL — AI Tutor</div>
+          <div class="al-status">● Online · Ready to help</div>
         </div>
       </div>
+      <div class="al-messages-list">
+        <div class="al-msg-row user">
+          <div class="al-avatar" style="background: var(--bg4); color: var(--text2); font-size: 0.7rem;">U</div>
+          <div class="al-bubble">Why does my model keep overfitting no matter what I try?</div>
+        </div>
+        <div class="al-msg-row">
+          <div class="al-avatar">◈</div>
+          <div class="al-bubble">Overfitting means your model is memorizing training data instead of generalizing. A few things to check: How does your training set size compare to model complexity? Are you using dropout or weight decay? What does your validation curve look like? 💡</div>
+        </div>
+        <div class="al-msg-row user">
+          <div class="al-avatar" style="background: var(--bg4); color: var(--text2); font-size: 0.7rem;">U</div>
+          <div class="al-bubble">I'm not using dropout at all. Should I add it?</div>
+        </div>
+        <div class="al-msg-row">
+          <div class="al-avatar">◈</div>
+          <div class="al-bubble">Yes! Dropout randomly deactivates neurons during training, forcing the network to learn redundant representations. It's one of the most effective regularization tools we have. The Deep Learning academy covers this in detail — start there and come back with questions 🎯</div>
+        </div>
+      </div>
+      <div class="al-input-row">
+        <div class="al-input-mock">Ask AL anything about AI…</div>
+        <button class="al-send-mock">Send</button>
+      </div>
     </div>
-    <div class="footer-bottom">
-      <span>© 2025 AILearn. Built with ◈ and a lot of gradient descent.</span>
-      <span>Privacy · Terms · Contact</span>
-    </div>
-  </footer>
-</div><!-- /landing -->
+  </div>
+</section>
 
-<!-- AUTH MODAL -->
-<div class="modal-overlay" id="auth-modal" onclick="closeAuthOnBg(event)">
-  <div class="modal-box" style="position:relative">
-    <button class="modal-close" onclick="closeAuthModal()">✕</button>
-    <div class="modal-title" id="modal-title">Welcome back</div>
-    <div class="modal-sub" id="modal-sub">Sign in to continue your AI journey.</div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button>
-      <button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+<!-- HOW IT WORKS -->
+<div id="how-it-works" class="full-width" style="background: var(--bg1);">
+  <div style="max-width: 1400px; margin: 0 auto; padding: 6rem 8%;">
+    <div class="section-header" style="text-align: center; max-width: 600px; margin-left: auto; margin-right: auto;">
+      <div class="section-eyebrow">The Process</div>
+      <h2 class="section-title">From Sign-Up to Expertise</h2>
+      <p class="section-sub" style="margin: 0 auto;">A clear, structured path with measurable milestones and no gatekeeping.</p>
     </div>
-    <div id="form-signin">
-      <button class="btn-google" onclick="signInWithGoogle()">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Continue with Google
-      </button>
-      <div class="divider">or sign in with username</div>
-      <div class="field-group"><label class="field-label">Username</label><input class="field-input" id="signin-username" type="text" placeholder="your_username" autocomplete="username" onkeydown="if(event.key==='Enter')signIn()"></div>
-      <div class="field-group"><label class="field-label">Password</label><input class="field-input" id="signin-password" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')signIn()"></div>
-      <button class="btn-primary" id="btn-signin" onclick="signIn()">Sign In →</button>
-      <p class="auth-msg" id="signin-msg"></p>
-    </div>
-    <div id="form-signup" style="display:none">
-      <button class="btn-google" onclick="signInWithGoogle()">
-        <svg viewBox="0 0 24 24" width="18" height="18"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-        Sign Up with Google
-      </button>
-      <div class="divider">or create a username account</div>
-      <div class="field-group"><label class="field-label">Username</label><input class="field-input" id="signup-username" type="text" placeholder="choose_a_username" autocomplete="username"></div>
-      <div class="field-group"><label class="field-label">Display Name</label><input class="field-input" id="signup-displayname" type="text" placeholder="Your Name"></div>
-      <div class="field-group"><label class="field-label">Password</label><input class="field-input" id="signup-password" type="password" placeholder="min 6 characters" autocomplete="new-password" onkeydown="if(event.key==='Enter')signUp()"></div>
-      <button class="btn-primary" id="btn-signup" onclick="signUp()">Create Account →</button>
-      <p class="auth-msg" id="signup-msg"></p>
+    <div class="steps-track">
+      <div class="step-item">
+        <div class="step-num">1</div>
+        <div class="step-title">Create Account</div>
+        <div class="step-desc">Sign up with Google or a username. Progress saves automatically to the cloud — pick up anywhere.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">2</div>
+        <div class="step-title">Start at Foundations</div>
+        <div class="step-desc">Begin with AI Foundations — the prerequisite that unlocks nearly every other academy on the platform.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">3</div>
+        <div class="step-title">Learn & Practice</div>
+        <div class="step-desc">Read, code, quiz. Ask AL when stuck. XP compounds as you unlock each next lesson.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">4</div>
+        <div class="step-title">Unlock Academies</div>
+        <div class="step-desc">Prerequisites gate advanced academies — finish Machine Learning to unlock Deep Learning, NLP, Vision, and more.</div>
+      </div>
+      <div class="step-item">
+        <div class="step-num">5</div>
+        <div class="step-title">Earn & Ship</div>
+        <div class="step-desc">Collect badges, climb the leaderboard, and ship real AI projects that prove your skills.</div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- HAMBURGER -->
-<button class="hamburger" onclick="toggleSidebar()">☰</button>
-<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+<!-- CTA SECTION -->
+<section style="text-align: center;">
+  <div class="section-eyebrow" style="text-align: center;">Ready?</div>
+  <h2 class="section-title" style="text-align: center; max-width: 600px; margin: 0 auto 1rem;">Start Your AI Journey Today</h2>
+  <p class="section-sub" style="text-align: center; margin: 0 auto 2.5rem;">
+    Free to start. No credit card. Begin with AI Foundations and unlock the full 16-academy curriculum as you progress.
+  </p>
+  <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+    <button class="btn-primary" style="font-size: 1rem; padding: 1rem 2.25rem;">Start Learning Free →</button>
+    <button class="btn-ghost" style="font-size: 1rem; padding: 1rem 2rem;">View Curriculum</button>
+  </div>
+</section>
 
-<!-- ════ MAIN APP ════ -->
-<div id="app">
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-logo"><div class="sl-icon">◈</div><div class="sl-text">AILearn</div></div>
-    <div class="sidebar-user">
-      <div class="su-greet">Logged in as</div>
-      <div class="su-name" id="su-name">—</div>
-      <div class="su-level" id="su-level">◈ Beginner</div>
-      <div class="su-xp-bar">
-        <div class="su-xp-label"><span id="su-xp-cur">0 XP</span><span id="su-xp-next">→ 200 XP</span></div>
-        <div class="su-xp-track"><div class="su-xp-fill" id="su-xp-fill" style="width:0%"></div></div>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="nav-logo" style="margin-bottom: 0.25rem;">
+        <div class="nav-logo-mark">◈</div>
+        AILearn
+      </div>
+      <div class="footer-brand-desc">The next-generation AI education platform. 16 specialized academies take you from AI fundamentals to production-ready expertise — at your own pace, with your own AI tutor.</div>
+      <div class="social-links">
+        <a href="https://x.com" target="_blank" class="social-btn" title="X/Twitter">𝕏</a>
+        <a href="https://github.com" target="_blank" class="social-btn" title="GitHub">⌨</a>
+        <a href="https://discord.com" target="_blank" class="social-btn" title="Discord">💬</a>
+        <a href="https://linkedin.com" target="_blank" class="social-btn" title="LinkedIn">in</a>
+        <a href="https://youtube.com" target="_blank" class="social-btn" title="YouTube">▶</a>
       </div>
     </div>
-    <nav class="sidebar-nav">
-      <div class="nav-section">Overview</div>
-      <div class="nav-item active" data-view="dashboard" onclick="showView('dashboard')"><span class="nav-icon">⬡</span>Dashboard</div>
-      <div class="nav-item" data-view="achievements" onclick="showView('achievements')"><span class="nav-icon">🏆</span>Achievements</div>
-      <div class="nav-item" data-view="leaderboard" onclick="showView('leaderboard')"><span class="nav-icon">📈</span>Leaderboard</div>
-      <div class="nav-section">Learn</div>
-      <div class="nav-item" data-view="track-build" onclick="showView('track-build')"><span class="nav-icon">🔨</span>Build AI</div>
-      <div class="nav-item" data-view="track-code" onclick="showView('track-code')"><span class="nav-icon">💻</span>Code AI</div>
-      <div class="nav-item" data-view="track-data" onclick="showView('track-data')"><span class="nav-icon">📊</span>Collect Data</div>
-      <div class="nav-item" data-view="track-prompt" onclick="showView('track-prompt')"><span class="nav-icon">✨</span>Prompt AI</div>
-      <div class="nav-section">Practice</div>
-      <div class="nav-item" data-view="projects" onclick="showView('projects')"><span class="nav-icon">🚀</span>Projects</div>
-      <div class="nav-item" data-view="sandbox" onclick="showView('sandbox')"><span class="nav-icon">⚗️</span>Code Sandbox</div>
-      <div class="nav-item" data-view="promptlab" onclick="showView('promptlab')"><span class="nav-icon">🧪</span>Prompt Lab</div>
-    </nav>
-    <div class="sidebar-al" onclick="toggleALChat()">
-      <div class="al-sidebar-row">
-        <div class="al-sidebar-icon">◈</div>
-        <div class="al-sidebar-info"><div class="al-sidebar-name">Chat with AL</div><div class="al-sidebar-sub">Your AI tutor — ask anything</div></div>
-        <span style="color:var(--text3);font-size:0.75rem">→</span>
-      </div>
+    <div>
+      <div class="footer-col-title">Platform</div>
+      <button class="footer-link">Features</button>
+      <button class="footer-link">Academies</button>
+      <button class="footer-link">Sign Up</button>
+      <button class="footer-link">Sign In</button>
     </div>
-    <div class="sidebar-bottom"><button class="btn-logout" onclick="logOut()">← Sign Out</button></div>
-  </nav>
-
-  <div class="main-content">
-    <div class="topbar">
-      <div class="topbar-title" id="topbar-title">Dashboard</div>
-      <div class="topbar-right">
-        <div class="tp-pill tp-streak" id="tp-streak">🔥 0 days</div>
-        <div class="tp-pill tp-xp" id="tp-xp">⚡ 0 XP</div>
-      </div>
+    <div>
+      <div class="footer-col-title">Academies</div>
+      <button class="footer-link">AI Foundations</button>
+      <button class="footer-link">Prompt Engineering</button>
+      <button class="footer-link">Machine Learning</button>
+      <button class="footer-link">Deep Learning</button>
+      <button class="footer-link">AI Agents</button>
+      <button class="footer-link">RAG</button>
     </div>
-    <div class="page-content">
-
-      <!-- DASHBOARD -->
-      <div class="view active" id="view-dashboard">
-        <div class="dash-hero">
-          <div class="dash-hero-eyebrow">YOUR JOURNEY</div>
-          <div class="dash-hero-h" id="dash-welcome">Welcome! 👋</div>
-          <div class="dash-hero-sub">Every lesson brings you closer to AI mastery. Keep the momentum going.</div>
-          <div class="dash-progress">
-            <div class="dp-label"><span>Overall Progress</span><span id="dash-pct">0%</span></div>
-            <div class="dp-bar"><div class="dp-fill" id="dash-bar" style="width:0%"></div></div>
-          </div>
-        </div>
-        <div class="stats-grid">
-          <div class="stat-card"><div class="sc-icon">⚡</div><div class="sc-num" id="sc-xp">0</div><div class="sc-label">XP Earned</div></div>
-          <div class="stat-card"><div class="sc-icon">📚</div><div class="sc-num" id="sc-lessons">0</div><div class="sc-label">Lessons Done</div></div>
-          <div class="stat-card"><div class="sc-icon">🔥</div><div class="sc-num" id="sc-streak">0</div><div class="sc-label">Day Streak</div></div>
-          <div class="stat-card"><div class="sc-icon">🏅</div><div class="sc-num" id="sc-badges">0</div><div class="sc-label">Badges Earned</div></div>
-        </div>
-        <div class="section-heading">🗺️ Learning Tracks <span class="section-heading-sub">— pick up where you left off</span></div>
-        <div class="tracks-grid">
-          <div class="track-card" data-c="purple" onclick="showView('track-build')"><div class="tc-icon">🔨</div><div class="tc-title">Build AI</div><div class="tc-desc">Neural networks, training, architecture, and deployment. The complete theory-to-practice foundation.</div><div class="tc-meta"><span>6 lessons · ~2.5h</span><span class="tc-pill ns" id="pill-build">Not started</span></div><div class="tc-mini-bar"><div class="tc-mini-fill" id="bar-build" style="width:0%"></div></div></div>
-          <div class="track-card" data-c="cyan" onclick="showView('track-code')"><div class="tc-icon">💻</div><div class="tc-title">Code AI</div><div class="tc-desc">Python, NumPy, PyTorch, LLM APIs, full pipelines. Write production ML code from scratch.</div><div class="tc-meta"><span>8 lessons · ~4h</span><span class="tc-pill ns" id="pill-code">Not started</span></div><div class="tc-mini-bar"><div class="tc-mini-fill" id="bar-code" style="width:0%"></div></div></div>
-          <div class="track-card" data-c="green" onclick="showView('track-data')"><div class="tc-icon">📊</div><div class="tc-title">Collect Data</div><div class="tc-desc">Scraping, labeling, cleaning, versioning. Master the craft that makes or breaks every AI model.</div><div class="tc-meta"><span>6 lessons · ~2.5h</span><span class="tc-pill ns" id="pill-data">Not started</span></div><div class="tc-mini-bar"><div class="tc-mini-fill" id="bar-data" style="width:0%"></div></div></div>
-          <div class="track-card" data-c="orange" onclick="showView('track-prompt')"><div class="tc-icon">✨</div><div class="tc-title">Prompt AI</div><div class="tc-desc">From zero-shot to RAG to agents — engineer prompts with the precision of a systems designer.</div><div class="tc-meta"><span>6 lessons · ~2.5h</span><span class="tc-pill ns" id="pill-prompt">Not started</span></div><div class="tc-mini-bar"><div class="tc-mini-fill" id="bar-prompt" style="width:0%"></div></div></div>
-        </div>
-        <br>
-        <div class="section-heading">📋 Recent Activity</div>
-        <div class="activity-list" id="activity-list"><div style="color:var(--text3);font-size:0.83rem;font-family:var(--font-d);padding:0.5rem 0">No activity yet — complete your first lesson to get started!</div></div>
-      </div>
-
-      <!-- TRACK VIEWS -->
-      <div class="view" id="view-track-build">
-        <div class="section-heading">🔨 Build AI</div>
-        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:1.25rem;max-width:600px;line-height:1.6">Master how AI systems are architecturally designed — from individual neurons to full transformer stacks.</div>
-        <div class="lesson-list" id="lessons-build"></div>
-      </div>
-      <div class="view" id="view-track-code">
-        <div class="section-heading">💻 Code AI</div>
-        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:1.25rem;max-width:600px;line-height:1.6">Write real, runnable Python code for AI. Every lesson includes working code examples and a sandbox challenge.</div>
-        <div class="lesson-list" id="lessons-code"></div>
-      </div>
-      <div class="view" id="view-track-data">
-        <div class="section-heading">📊 Collect Data</div>
-        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:1.25rem;max-width:600px;line-height:1.6">Data is 80% of the work in real AI. Learn to find, collect, clean, label, and structure datasets.</div>
-        <div class="lesson-list" id="lessons-data"></div>
-      </div>
-      <div class="view" id="view-track-prompt">
-        <div class="section-heading">✨ Prompt AI</div>
-        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:1.25rem;max-width:600px;line-height:1.6">From basic prompting to RAG, tool use, and AI agents — with real, working examples throughout.</div>
-        <div class="lesson-list" id="lessons-prompt"></div>
-      </div>
-
-      <!-- LESSON CONTENT -->
-      <div class="view" id="view-lesson-content"><div id="lesson-content-view"></div></div>
-
-      <!-- PROJECTS -->
-      <div class="view" id="view-projects">
-        <div class="section-heading">🚀 AI Projects <span class="section-heading-sub">— apply your skills to real challenges</span></div>
-        <div style="color:var(--text2);font-size:0.85rem;margin-bottom:1.5rem;max-width:600px;line-height:1.6">Guided challenges that combine skills from multiple tracks. Complete them for bonus XP and project badges.</div>
-        <div class="projects-grid" id="projects-grid"></div>
-      </div>
-      <div class="view" id="view-project-detail"><div id="project-detail-view"></div></div>
-
-      <!-- SANDBOX -->
-      <div class="view" id="view-sandbox">
-        <div class="section-heading">⚗️ Code Sandbox <span class="section-heading-sub">— Ctrl+Enter to run</span></div>
-        <div class="sandbox-layout">
-          <div class="sandbox-panel">
-            <div class="panel-hdr">
-              <div class="panel-title"><span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>&nbsp;ai_sandbox.py</div>
-              <div style="display:flex;gap:0.5rem">
-                <select id="sandbox-preset" onchange="loadSandboxPreset()" style="background:var(--bg3);border:1px solid var(--border);border-radius:6px;padding:0.28rem 0.55rem;color:var(--text2);font-size:0.7rem;font-family:var(--font-d);outline:none">
-                  <option value="">Load Example…</option>
-                  <option value="neuron">Single Neuron</option>
-                  <option value="neural_net">2-Layer Network</option>
-                  <option value="gradient">Gradient Descent</option>
-                  <option value="attention">Self-Attention</option>
-                  <option value="tokenizer">Simple Tokenizer</option>
-                </select>
-                <button class="btn-run" onclick="runCode()">▶ Run</button>
-              </div>
-            </div>
-            <textarea class="code-editor" id="code-editor" spellcheck="false"># AILearn Code Sandbox
-# Press Ctrl+Enter or click ▶ Run to execute.
-
-def softmax(x):
-    e_x = [2.718**xi for xi in x]
-    total = sum(e_x)
-    return [v / total for v in e_x]
-
-def scaled_softmax(logits, temperature=1.0):
-    scaled = [l / temperature for l in logits]
-    return softmax(scaled)
-
-logits = [2.0, 1.0, 0.1]
-print("=== Temperature Scaling Demo ===")
-print(f"Temp=0.5 (sharp):  {[round(p,4) for p in scaled_softmax(logits, 0.5)]}")
-print(f"Temp=1.0 (normal): {[round(p,4) for p in scaled_softmax(logits, 1.0)]}")
-print(f"Temp=2.0 (flat):   {[round(p,4) for p in scaled_softmax(logits, 2.0)]}")
-</textarea>
-            <div class="sandbox-examples">
-              <span style="font-size:0.7rem;color:var(--text3);font-family:var(--font-d)">Quick inserts:</span>
-              <div class="sandbox-chip" onclick="insertSnippet('sigmoid')">sigmoid()</div>
-              <div class="sandbox-chip" onclick="insertSnippet('relu')">relu()</div>
-              <div class="sandbox-chip" onclick="insertSnippet('loss')">MSE loss</div>
-              <div class="sandbox-chip" onclick="insertSnippet('backprop')">backprop step</div>
-            </div>
-          </div>
-          <div class="sandbox-panel">
-            <div class="panel-hdr">
-              <div class="panel-title">📟 Output</div>
-              <button class="btn-sm" onclick="clearOutput()" style="font-size:0.68rem;padding:0.28rem 0.6rem">Clear</button>
-            </div>
-            <div class="code-output" id="code-output">// Click ▶ Run or press Ctrl+Enter to execute
-</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PROMPT LAB -->
-      <div class="view" id="view-promptlab">
-        <div class="prompt-lab-wrap">
-          <div class="section-heading">🧪 Prompt Lab <span class="section-heading-sub">— practice with a live AI</span></div>
-          <div style="color:var(--text2);font-size:0.85rem;margin-bottom:1.25rem;max-width:600px;line-height:1.6">Write prompts and get real AI responses. Experiment with zero-shot, few-shot, chain-of-thought techniques.</div>
-          <div class="prompt-area">
-            <textarea class="prompt-textarea" id="prompt-input" placeholder="Write your prompt here… Try: 'Think step by step: why does batch normalization help?'" rows="5"></textarea>
-            <div class="prompt-footer">
-              <span class="prompt-tip">AI Tutor Mode · Ctrl+Enter to send</span>
-              <button class="btn-send" id="btn-send-prompt" onclick="sendPrompt()">Send →</button>
-            </div>
-          </div>
-          <div class="prompt-response" id="prompt-response"></div>
-          <div id="prompt-history-container"></div>
-          <div class="prompt-examples">
-            <div class="pe-title">💡 Technique examples to try:</div>
-            <div class="example-chips">
-              <div class="example-chip" onclick="fillPrompt(this)">Explain backpropagation to a 12-year-old</div>
-              <div class="example-chip" onclick="fillPrompt(this)">Write Python to load and preprocess a CSV for ML</div>
-              <div class="example-chip" onclick="fillPrompt(this)">Think step by step: Why does batch normalization help training?</div>
-              <div class="example-chip" onclick="fillPrompt(this)">Compare transformers vs RNNs for sequence modeling</div>
-              <div class="example-chip" onclick="fillPrompt(this)">What is RAG and when should I use it over fine-tuning?</div>
-              <div class="example-chip" onclick="fillPrompt(this)">Few-shot: "great product" → positive, "fell apart" → negative, "decent for price" → ?</div>
-              <div class="example-chip" onclick="fillPrompt(this)">How does attention reduce the vanishing gradient problem?</div>
-              <div class="example-chip" onclick="fillPrompt(this)">You are an ML researcher. Review: training on imbalanced data without resampling.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ACHIEVEMENTS -->
-      <div class="view" id="view-achievements">
-        <div class="section-heading">🏆 Achievements <span class="section-heading-sub">— <span id="badge-count-label">0</span> earned</span></div>
-        <div class="badges-grid" id="badges-grid"></div>
-      </div>
-
-      <!-- LEADERBOARD -->
-      <div class="view" id="view-leaderboard">
-        <div class="section-heading">📈 Global Leaderboard</div>
-        <div class="leaderboard-wrap">
-          <div id="leaderboard-container"><div class="empty-state"><div class="es-icon">📊</div><div class="es-title">Loading scores…</div></div></div>
-        </div>
-      </div>
-
-    </div><!-- /page-content -->
-  </div><!-- /main-content -->
-</div><!-- /app -->
-
-<!-- AL CHAT -->
-<div class="al-chat-panel" id="al-panel" style="display:none">
-  <div class="al-window" id="al-window">
-    <div class="al-win-hdr">
-      <div class="al-win-avatar">◈</div>
-      <div><div class="al-win-name">AL — AI Tutor</div><div class="al-win-status">Online · Ready to help</div></div>
-      <button class="al-win-close" onclick="toggleALChat()">✕</button>
-    </div>
-    <div class="al-messages" id="al-messages">
-      <div class="al-chat-msg">
-        <div class="al-chat-avatar al-av">◈</div>
-        <div class="al-chat-bubble al-bubble">Hey! I'm AL, your AI tutor on AILearn 👋<br><br>Ask me anything about AI — concepts, code, career advice. I'll guide you without doing your homework for you 😄<br><br>What are you working on?</div>
-      </div>
-    </div>
-    <div class="al-win-input-row">
-      <input class="al-win-input" id="al-input" type="text" placeholder="Ask AL anything…" onkeydown="if(event.key==='Enter')sendALMessage()">
-      <button class="al-win-send" id="al-send-btn" onclick="sendALMessage()">Send</button>
+    <div>
+      <div class="footer-col-title">Community</div>
+      <button class="footer-link">Leaderboard</button>
+      <button class="footer-link">Discord</button>
+      <button class="footer-link">GitHub</button>
+      <button class="footer-link">Blog</button>
     </div>
   </div>
-  <button class="al-fab" onclick="toggleALChat()" title="Chat with AL">◈</button>
-</div>
+  <div class="footer-bottom">
+    <span>© 2025 AILearn. Built with ◈ and a lot of gradient descent.</span>
+    <span>Privacy · Terms · Contact</span>
+  </div>
+</footer>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <div class="toast-icon" id="toast-icon">🎉</div>
-  <div><div class="toast-title" id="toast-title">Done!</div><div class="toast-sub" id="toast-sub"></div></div>
-</div>
+<script>
+// ── CURRICULUM DATA (inline from curriculum.js) ──
+const ACADEMIES = [
+  { id:"foundations", name:"AI Foundations", icon:"🧠", lessons:45, difficulty:"beginner", prereqs:["None"], description:"Build a complete mental model of artificial intelligence." },
+  { id:"prompt-engineering", name:"Prompt Engineering", icon:"✍️", lessons:50, difficulty:"beginner", prereqs:["AI Foundations"], description:"Learn how to communicate effectively with AI systems." },
+  { id:"python-for-ai", name:"Python for AI", icon:"🐍", lessons:60, difficulty:"beginner", prereqs:["AI Foundations"], description:"Master Python for building AI systems." },
+  { id:"machine-learning", name:"Machine Learning", icon:"📊", lessons:60, difficulty:"intermediate", prereqs:["Python for AI","Data Science"], description:"Learn classical machine learning algorithms." },
+  { id:"deep-learning", name:"Deep Learning", icon:"🧬", lessons:70, difficulty:"advanced", prereqs:["Machine Learning"], description:"Neural networks and modern deep learning." },
+  { id:"nlp", name:"Natural Language Processing", icon:"💬", lessons:40, difficulty:"advanced", prereqs:["Deep Learning"], description:"Master NLP from tokenization to transformers." },
+  { id:"computer-vision", name:"Computer Vision", icon:"👁️", lessons:40, difficulty:"advanced", prereqs:["Deep Learning"], description:"Build systems that understand visual data." },
+  { id:"generative-ai", name:"Generative AI", icon:"🎨", lessons:50, difficulty:"advanced", prereqs:["Deep Learning"], description:"Create images, text, audio, and more with AI." },
+  { id:"agents", name:"AI Agents", icon:"🤖", lessons:60, difficulty:"advanced", prereqs:["Prompt Engineering","Generative AI"], description:"Build autonomous AI systems that take actions." },
+  { id:"rag", name:"Retrieval Augmented Generation", icon:"📚", lessons:35, difficulty:"advanced", prereqs:["Embeddings","AI Agents"], description:"Ground LLMs with real-time knowledge retrieval." },
+  { id:"fine-tuning", name:"Fine Tuning", icon:"⚙️", lessons:35, difficulty:"advanced", prereqs:["Deep Learning"], description:"Adapt pre-trained models for specialized tasks." },
+  { id:"mlops", name:"MLOps", icon:"🚀", lessons:40, difficulty:"advanced", prereqs:["Machine Learning"], description:"Deploy, monitor, and maintain ML systems in production." },
+  { id:"product-development", name:"AI Product Development", icon:"🏗️", lessons:30, difficulty:"intermediate", prereqs:["Prompt Engineering"], description:"Ship AI-powered products users love." },
+  { id:"ai-business", name:"AI Business", icon:"💼", lessons:25, difficulty:"intermediate", prereqs:["AI Foundations"], description:"Apply AI strategy to real business problems." },
+  { id:"ethics", name:"AI Ethics & Safety", icon:"🛡️", lessons:25, difficulty:"intermediate", prereqs:["AI Foundations"], description:"Build responsible and safe AI systems." },
+  { id:"research", name:"AI Research", icon:"🔬", lessons:30, difficulty:"expert", prereqs:["Deep Learning"], description:"Read papers, run experiments, push boundaries." },
+];
 
-<!-- Scripts — order matters -->
-<script src="curriculum.js"></script>
-<script src="data.js"></script>
-<script src="auth.js"></script>
-<script src="app.js"></script>
+// ── RENDER ACADEMIES GRID ──
+function renderAcademies() {
+  const grid = document.getElementById('academies-grid');
+  grid.innerHTML = ACADEMIES.map(a => {
+    const prereqHTML = a.prereqs[0] === 'None'
+      ? `<span class="prereq-tag none">No prereqs</span>`
+      : a.prereqs.map(p => `<span class="prereq-tag">${p}</span>`).join('');
 
+    return `
+      <div class="academy-card">
+        <div class="ac-header">
+          <div class="ac-icon">${a.icon}</div>
+          <span class="ac-diff diff-${a.difficulty}">${a.difficulty}</span>
+        </div>
+        <div class="ac-name">${a.name}</div>
+        <div class="ac-desc">${a.description || ''}</div>
+        <div class="ac-footer">
+          <div class="ac-lessons">${a.lessons} lessons</div>
+          <div class="ac-prereqs">${prereqHTML}</div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ── HERO GRAPH ──
+function renderGraph() {
+  const canvas = document.getElementById('academy-graph');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth, H = canvas.offsetHeight;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  // Node layout — manually positioned to reflect dependency flow
+  const nodes = {
+    'foundations':          { x: 0.5,  y: 0.08 },
+    'prompt-engineering':   { x: 0.18, y: 0.26 },
+    'python-for-ai':        { x: 0.82, y: 0.26 },
+    'machine-learning':     { x: 0.75, y: 0.44 },
+    'ai-business':          { x: 0.22, y: 0.44 },
+    'ethics':               { x: 0.5,  y: 0.38 },
+    'product-development':  { x: 0.1,  y: 0.56 },
+    'deep-learning':        { x: 0.68, y: 0.6  },
+    'agents':               { x: 0.25, y: 0.65 },
+    'mlops':                { x: 0.88, y: 0.55 },
+    'fine-tuning':          { x: 0.55, y: 0.76 },
+    'nlp':                  { x: 0.35, y: 0.8  },
+    'computer-vision':      { x: 0.7,  y: 0.82 },
+    'generative-ai':        { x: 0.12, y: 0.78 },
+    'rag':                  { x: 0.42, y: 0.94 },
+    'research':             { x: 0.82, y: 0.94 },
+  };
+
+  // Map prereqs to ids
+  const nameToId = {};
+  ACADEMIES.forEach(a => nameToId[a.name] = a.id);
+
+  const edges = [];
+  ACADEMIES.forEach(a => {
+    a.prereqs.forEach(p => {
+      if (p !== 'None' && nameToId[p] && nodes[a.id] && nodes[nameToId[p]]) {
+        edges.push([nameToId[p], a.id]);
+      }
+    });
+  });
+
+  const diffColors = {
+    beginner:     '#34D399',
+    intermediate: '#FFB84D',
+    advanced:     '#8B9FFF',
+    expert:       '#FF6B6B',
+  };
+
+  function nodeXY(id) {
+    const n = nodes[id];
+    return [n.x * W, n.y * H];
+  }
+
+  // Draw edges
+  edges.forEach(([from, to]) => {
+    const [x1, y1] = nodeXY(from);
+    const [x2, y2] = nodeXY(to);
+    const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+    grad.addColorStop(0, 'rgba(108,127,255,0.35)');
+    grad.addColorStop(1, 'rgba(34,211,238,0.15)');
+    ctx.beginPath();
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 1.2;
+    ctx.setLineDash([4, 6]);
+    ctx.moveTo(x1, y1);
+    ctx.lineTo(x2, y2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  });
+
+  // Draw nodes
+  ACADEMIES.forEach(a => {
+    if (!nodes[a.id]) return;
+    const [x, y] = nodeXY(a.id);
+    const color = diffColors[a.difficulty] || '#8B9FFF';
+    const r = 20;
+
+    // Glow
+    const glow = ctx.createRadialGradient(x, y, 0, x, y, r * 2.5);
+    glow.addColorStop(0, color + '30');
+    glow.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(x, y, r * 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = glow;
+    ctx.fill();
+
+    // Circle fill
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.fillStyle = '#0F1525';
+    ctx.fill();
+
+    // Circle border
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Icon
+    ctx.font = `${r * 0.85}px sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(a.icon, x, y);
+
+    // Name label
+    const shortName = a.name.length > 18 ? a.name.slice(0, 16) + '…' : a.name;
+    ctx.font = `500 10px 'DM Sans', sans-serif`;
+    ctx.fillStyle = 'rgba(200,208,232,0.75)';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillText(shortName, x, y + r + 4);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAcademies();
+  setTimeout(renderGraph, 50);
+});
+
+window.addEventListener('resize', () => {
+  setTimeout(renderGraph, 50);
+});
+</script>
 </body>
 </html>
