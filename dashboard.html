@@ -420,19 +420,145 @@
 
 <!-- footer injected by nav.js -->
 
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script src="curriculum.js"></script>
 <script src="nav.js"></script>
 <script>
-  // ── STREAK CALENDAR (last 28 days placeholder) ──
-  const cal = document.getElementById('streak-calendar');
-  for (let i = 0; i < 28; i++) {
-    const d = document.createElement('div');
-    d.className = 'streak-day' + (i === 27 ? ' today' : '');
-    cal.appendChild(d);
+  // ── Auth guard: redirect to sign-in if not logged in ─────
+  fbAuth.onAuthStateChanged(async user => {
+    if (!user) {
+      window.location.href = 'auth.html';
+      return;
+    }
+    await loadDashboard(user);
+  });
+
+  async function loadDashboard(user) {
+    // Resolve username from UID mapping
+    let uname = await getUsernameForUID(user.uid) || usernameFromEmail(user.email);
+    const data = await getUserByUsername(uname);
+
+    if (!data) {
+      // No DB record yet (edge case) — create minimal one
+      const fresh = {
+        displayName: user.displayName || uname,
+        email: user.email,
+        authMethod: 'email',
+        uid: user.uid,
+        xp: 0, done: [], streak: 0,
+        lastLogin: Date.now(),
+        badges: ['first-login'],
+        projects: [],
+        createdAt: Date.now()
+      };
+      await db.ref('users/' + uname).set(fresh);
+      await setUIDMapping(user.uid, uname);
+      renderDashboard(uname, fresh);
+    } else {
+      renderDashboard(uname, data);
+    }
   }
 
-  // ── TODO: Firebase auth check — redirect to auth.html if not signed in ──
-  // ── TODO: Load user progress from Firebase Realtime DB ──
+  function renderDashboard(uname, data) {
+    const displayName = data.displayName || uname;
+    const xp          = data.xp      || 0;
+    const done        = data.done     || [];
+    const streak      = data.streak   || 0;
+    const badges      = data.badges   || [];
+    const projects    = data.projects || [];
+
+    // Profile section
+    const avatarEl = document.getElementById('dash-avatar');
+    if (avatarEl) avatarEl.textContent = displayName[0].toUpperCase();
+
+    const nameEl = document.getElementById('dash-name');
+    if (nameEl) nameEl.textContent = displayName;
+
+    const handleEl = document.getElementById('dash-handle');
+    if (handleEl) handleEl.textContent = '@' + uname;
+
+    // Stats
+    setEl('dash-xp',      xp.toLocaleString() + ' XP');
+    setEl('dash-lessons', done.length + ' lessons');
+    setEl('dash-streak',  streak + ' day streak');
+    setEl('dash-badges',  badges.length + ' badges');
+
+    // Progress
+    if (typeof CUR !== 'undefined') {
+      const total = Object.values(CUR).flat().length;
+      const pct   = total > 0 ? Math.round((done.length / total) * 100) : 0;
+      setEl('dash-pct', pct + '%');
+      const bar = document.getElementById('dash-bar');
+      if (bar) bar.style.width = pct + '%';
+
+      // Track progress pills
+      ['build','code','data','prompt'].forEach(t => {
+        const ls  = CUR[t] || [];
+        const n   = ls.filter(l => done.includes(l.id)).length;
+        const tot = ls.length;
+        const pill = document.getElementById('pill-' + t);
+        const bar2 = document.getElementById('bar-'  + t);
+        if (pill) {
+          if (n === 0)        { pill.textContent = 'Not started'; pill.className = 'tc-pill ns'; }
+          else if (n === tot) { pill.textContent = 'Completed ✓'; pill.className = 'tc-pill done'; }
+          else                { pill.textContent = n + '/' + tot + ' done'; pill.className = 'tc-pill ip'; }
+        }
+        if (bar2) bar2.style.width = Math.round((n / tot) * 100) + '%';
+      });
+
+      // Recent activity
+      const actEl = document.getElementById('activity-list');
+      if (actEl) {
+        const recent = done.slice(-5).reverse();
+        const allL   = Object.values(CUR).flat();
+        const colors = { build:'var(--lvl-primary)', code:'var(--cyan)', data:'var(--green)', prompt:'var(--orange)' };
+        if (!recent.length) {
+          actEl.innerHTML = '<div style="color:var(--text3);font-size:0.83rem;font-family:var(--font-d);padding:0.5rem 0">No lessons completed yet — pick a track to start!</div>';
+        } else {
+          actEl.innerHTML = recent.map(id => {
+            const l = allL.find(x => x.id === id);
+            if (!l) return '';
+            const t = id.split('-')[0];
+            return '<div class="activity-item">'
+              + '<div class="ai-dot" style="background:' + colors[t] + '"></div>'
+              + '<div class="ai-text"><strong>' + l.title + '</strong></div>'
+              + '<div class="ai-time">+' + l.xp + ' XP</div>'
+              + '</div>';
+          }).join('');
+        }
+      }
+    }
+
+    // Streak calendar (last 28 days, mark today)
+    const cal = document.getElementById('streak-calendar');
+    if (cal) {
+      cal.innerHTML = '';
+      for (let i = 0; i < 28; i++) {
+        const d = document.createElement('div');
+        d.className = 'streak-day' + (i === 27 ? ' today' : '');
+        cal.appendChild(d);
+      }
+    }
+
+    // Sign-out link
+    const signOutBtn = document.getElementById('dash-signout');
+    if (signOutBtn) {
+      signOutBtn.addEventListener('click', async e => {
+        e.preventDefault();
+        await fbAuth.signOut();
+        window.location.href = 'auth.html';
+      });
+    }
+  }
+
+  function setEl(id, text) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  }
 </script>
 </body>
 </html>
