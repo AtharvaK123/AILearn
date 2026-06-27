@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — AILearn</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+  .dashboard-layout {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2.5rem 8% 5rem;
+  }
+
+  /* ── PROFILE HEADER ── */
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+    margin-bottom: 2.5rem;
+    padding: 1.75rem;
+    background: var(--bg1);
+    border: 1px solid var(--border2);
+    border-radius: 16px;
+  }
+  .profile-avatar {
+    width: 72px; height: 72px;
+    background: linear-gradient(135deg, var(--accent), var(--cyan));
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 1.75rem;
+    flex-shrink: 0;
+    font-family: var(--font-d);
+    font-weight: 800;
+    color: white;
+  }
+  .profile-name {
+    font-family: var(--font-d);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--text0);
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+  }
+  .profile-handle {
+    font-family: var(--font-m);
+    font-size: 0.72rem;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+  }
+  .profile-stats {
+    display: flex;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+  }
+  .profile-stat { display: flex; flex-direction: column; gap: 0.1rem; }
+  .profile-stat-num {
+    font-family: var(--font-d);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text0);
+    letter-spacing: -0.02em;
+  }
+  .profile-stat-label {
+    font-family: var(--font-m);
+    font-size: 0.62rem;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+  }
+  .profile-header-right { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; }
+
+  /* ── XP LEVEL RING ── */
+  .xp-ring-wrap { position: relative; width: 80px; height: 80px; }
+  .xp-ring-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .xp-ring-level { font-family: var(--font-d); font-size: 1.1rem; font-weight: 800; color: var(--text0); line-height: 1; }
+  .xp-ring-sub   { font-family: var(--font-m); font-size: 0.55rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ── GRID LAYOUT ── */
+  .dash-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+  }
+
+  .dash-card {
+    background: var(--bg1);
+    border: 1px solid var(--border2);
+    border-radius: 14px;
+    padding: 1.5rem;
+  }
+  .dash-card-title {
+    font-family: var(--font-d);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text0);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .dash-card-title a {
+    font-family: var(--font-m);
+    font-size: 0.68rem;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+  }
+  .dash-card-title a:hover { color: var(--accent2); }
+
+  /* ── CONTINUE LEARNING ── */
+  .continue-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    text-decoration: none;
+  }
+  .continue-item:hover { border-color: var(--border); }
+  .continue-icon { font-size: 1.5rem; flex-shrink: 0; }
+  .continue-info { flex: 1; min-width: 0; }
+  .continue-name { font-family: var(--font-d); font-size: 0.88rem; font-weight: 600; color: var(--text0); margin-bottom: 0.2rem; }
+  .continue-lesson { font-size: 0.75rem; color: var(--text3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 0.5rem; }
+  .continue-arrow { color: var(--accent); font-size: 0.9rem; flex-shrink: 0; }
+
+  /* ── STREAK CALENDAR ── */
+  .streak-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-top: 0.5rem;
+  }
+  .streak-day {
+    aspect-ratio: 1;
+    border-radius: 4px;
+    background: var(--bg3);
+  }
+  .streak-day.active  { background: var(--accent); opacity: 0.7; }
+  .streak-day.today   { background: var(--cyan); opacity: 1; box-shadow: 0 0 8px rgba(34,211,238,0.4); }
+  .streak-day-label {
+    font-family: var(--font-m);
+    font-size: 0.6rem;
+    color: var(--text3);
+    text-align: center;
+    margin-bottom: 0.35rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .streak-days-row { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; margin-bottom: 4px; }
+
+  /* ── BADGES ── */
+  .badges-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.65rem;
+  }
+  .badge-item {
+    aspect-ratio: 1;
+    background: var(--bg2);
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    font-size: 1.4rem;
+    transition: border-color 0.2s;
+    cursor: default;
+    position: relative;
+  }
+  .badge-item.earned { border-color: var(--border); }
+  .badge-item.locked { opacity: 0.3; }
+  .badge-item:hover .badge-tooltip {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .badge-label { font-family: var(--font-m); font-size: 0.55rem; color: var(--text3); text-align: center; letter-spacing: 0.04em; }
+  .badge-tooltip {
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.7rem;
+    color: var(--text1);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+    z-index: 10;
+  }
+
+  /* ── SKILL BARS ── */
+  .skill-bar-row { margin-bottom: 1rem; }
+  .skill-bar-header { display: flex; justify-content: space-between; margin-bottom: 0.4rem; }
+  .skill-bar-name { font-size: 0.82rem; color: var(--text1); }
+  .skill-bar-pct  { font-family: var(--font-m); font-size: 0.72rem; color: var(--text3); }
+
+  /* ── ACTIVITY FEED ── */
+  .activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border2);
+  }
+  .activity-item:last-child { border-bottom: none; }
+  .activity-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    margin-top: 0.4rem;
+  }
+  .activity-dot.xp   { background: var(--gold); }
+  .activity-dot.badge { background: var(--cyan); }
+  .activity-text  { font-size: 0.82rem; color: var(--text1); line-height: 1.5; }
+  .activity-time  { font-family: var(--font-m); font-size: 0.65rem; color: var(--text3); margin-top: 0.2rem; }
+
+  @media (max-width: 900px) {
+    .dash-grid { grid-template-columns: 1fr; }
+    .profile-header { flex-wrap: wrap; }
+    .profile-header-right { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+<!-- nav injected by nav.js -->
+
+<div class="dashboard-layout">
+
+  <!-- PROFILE HEADER -->
+  <div class="profile-header">
+    <div class="profile-avatar" id="user-avatar">A</div>
+    <div>
+      <div class="profile-name" id="user-name">Learner</div>
+      <div class="profile-handle" id="user-handle">@learner · Joined 2025</div>
+      <div class="profile-stats">
+        <div class="profile-stat"><div class="profile-stat-num" id="stat-xp">0</div><div class="profile-stat-label">Total XP</div></div>
+        <div class="profile-stat"><div class="profile-stat-num" id="stat-lessons">0</div><div class="profile-stat-label">Lessons Done</div></div>
+        <div class="profile-stat"><div class="profile-stat-num" id="stat-streak">0</div><div class="profile-stat-label">Day Streak</div></div>
+        <div class="profile-stat"><div class="profile-stat-num" id="stat-academies">0</div><div class="profile-stat-label">Academies</div></div>
+      </div>
+    </div>
+    <div class="profile-header-right">
+      <svg width="80" height="80" viewBox="0 0 80 80">
+        <circle cx="40" cy="40" r="34" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="6"/>
+        <circle cx="40" cy="40" r="34" fill="none" stroke="url(#xpGrad)" stroke-width="6"
+          stroke-dasharray="213.6" stroke-dashoffset="160" stroke-linecap="round"
+          transform="rotate(-90 40 40)"/>
+        <defs>
+          <linearGradient id="xpGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#6C7FFF"/>
+            <stop offset="100%" stop-color="#22D3EE"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <div class="xp-ring-label" style="position:absolute; width:80px; text-align:center; transform: translateY(-80px);">
+        <div class="xp-ring-level">Lv 1</div>
+        <div class="xp-ring-sub">Beginner</div>
+      </div>
+      <a href="auth.html" class="btn-ghost" style="font-size:0.8rem; padding: 0.5rem 1rem;">Sign Out</a>
+    </div>
+  </div>
+
+  <!-- MAIN GRID -->
+  <div class="dash-grid">
+
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+      <!-- CONTINUE LEARNING -->
+      <div class="dash-card">
+        <div class="dash-card-title">
+          Continue Learning
+          <a href="academies.html">Browse All →</a>
+        </div>
+        <a href="learn.html?academy=foundations" class="continue-item">
+          <div class="continue-icon">🧠</div>
+          <div class="continue-info">
+            <div class="continue-name">AI Foundations</div>
+            <div class="continue-lesson">Next: What is AI? — Module 1, Lesson 1</div>
+            <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:5%"></div></div>
+          </div>
+          <div class="continue-arrow">→</div>
+        </a>
+        <div style="text-align:center; padding: 0.75rem 0 0; font-size:0.82rem; color:var(--text3);">
+          Complete AI Foundations to unlock more academies.
+        </div>
+      </div>
+
+      <!-- SKILL BREAKDOWN -->
+      <div class="dash-card">
+        <div class="dash-card-title">Skill Breakdown</div>
+        <div class="skill-bar-row">
+          <div class="skill-bar-header"><span class="skill-bar-name">AI Literacy</span><span class="skill-bar-pct">5%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:5%"></div></div>
+        </div>
+        <div class="skill-bar-row">
+          <div class="skill-bar-header"><span class="skill-bar-name">Python</span><span class="skill-bar-pct">0%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%"></div></div>
+        </div>
+        <div class="skill-bar-row">
+          <div class="skill-bar-header"><span class="skill-bar-name">Prompt Design</span><span class="skill-bar-pct">0%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%"></div></div>
+        </div>
+        <div class="skill-bar-row">
+          <div class="skill-bar-header"><span class="skill-bar-name">ML & Modeling</span><span class="skill-bar-pct">0%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%"></div></div>
+        </div>
+        <div class="skill-bar-row">
+          <div class="skill-bar-header"><span class="skill-bar-name">Deep Learning</span><span class="skill-bar-pct">0%</span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <!-- RECENT ACTIVITY -->
+      <div class="dash-card">
+        <div class="dash-card-title">Recent Activity</div>
+        <div class="activity-item">
+          <div class="activity-dot"></div>
+          <div>
+            <div class="activity-text">Enrolled in <strong>AI Foundations</strong></div>
+            <div class="activity-time">Just now</div>
+          </div>
+        </div>
+        <div class="activity-item">
+          <div class="activity-dot xp"></div>
+          <div>
+            <div class="activity-text">Earned <strong>+10 XP</strong> — Account created</div>
+            <div class="activity-time">Just now</div>
+          </div>
+        </div>
+        <div style="text-align:center; padding:1rem 0 0; font-size:0.78rem; color:var(--text3);">
+          Complete lessons to see more activity here.
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN -->
+    <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+
+      <!-- STREAK -->
+      <div class="dash-card">
+        <div class="dash-card-title">Daily Streak 🔥</div>
+        <div style="font-family: var(--font-d); font-size: 2rem; font-weight: 800; color: var(--text0); letter-spacing:-0.03em; margin-bottom:0.25rem;" id="streak-num">0</div>
+        <div style="font-family: var(--font-m); font-size:0.7rem; color:var(--text3); margin-bottom:1rem;">days in a row</div>
+        <div class="streak-days-row">
+          <div class="streak-day-label">M</div>
+          <div class="streak-day-label">T</div>
+          <div class="streak-day-label">W</div>
+          <div class="streak-day-label">T</div>
+          <div class="streak-day-label">F</div>
+          <div class="streak-day-label">S</div>
+          <div class="streak-day-label">S</div>
+        </div>
+        <div id="streak-calendar" class="streak-grid"></div>
+      </div>
+
+      <!-- BADGES -->
+      <div class="dash-card">
+        <div class="dash-card-title">
+          Badges
+          <span style="font-family:var(--font-m); font-size:0.68rem; color:var(--text3);">0 / 12</span>
+        </div>
+        <div class="badges-grid">
+          <div class="badge-item locked">🧠<div class="badge-label">First Step</div><div class="badge-tooltip">Complete your first lesson</div></div>
+          <div class="badge-item locked">🔥<div class="badge-label">On Fire</div><div class="badge-tooltip">7-day streak</div></div>
+          <div class="badge-item locked">⚡<div class="badge-label">Speed Run</div><div class="badge-tooltip">5 lessons in a day</div></div>
+          <div class="badge-item locked">🎓<div class="badge-label">Graduate</div><div class="badge-tooltip">Finish an academy</div></div>
+          <div class="badge-item locked">🐍<div class="badge-label">Pythonista</div><div class="badge-tooltip">Finish Python for AI</div></div>
+          <div class="badge-item locked">🤖<div class="badge-label">Agent Builder</div><div class="badge-tooltip">Finish AI Agents</div></div>
+          <div class="badge-item locked">💎<div class="badge-label">Diamond</div><div class="badge-tooltip">Reach level 10</div></div>
+          <div class="badge-item locked">🌟<div class="badge-label">All-Star</div><div class="badge-tooltip">Top 100 leaderboard</div></div>
+        </div>
+      </div>
+
+      <!-- LEADERBOARD TEASER -->
+      <div class="dash-card">
+        <div class="dash-card-title">
+          Your Rank
+          <a href="leaderboard.html">Full Board →</a>
+        </div>
+        <div style="text-align:center; padding:1.5rem 0;">
+          <div style="font-family:var(--font-d); font-size:2.5rem; font-weight:800; color:var(--text0); letter-spacing:-0.04em;">#—</div>
+          <div style="font-family:var(--font-m); font-size:0.7rem; color:var(--text3); margin-top:0.25rem;">Complete lessons to rank</div>
+        </div>
+        <a href="leaderboard.html" class="btn-ghost" style="display:block; text-align:center; width:100%; font-size:0.82rem; padding:0.6rem 1rem;">View Leaderboard</a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- footer injected by nav.js -->
+
+<script src="curriculum.js"></script>
+<script src="nav.js"></script>
+<script>
+  // ── STREAK CALENDAR (last 28 days placeholder) ──
+  const cal = document.getElementById('streak-calendar');
+  for (let i = 0; i < 28; i++) {
+    const d = document.createElement('div');
+    d.className = 'streak-day' + (i === 27 ? ' today' : '');
+    cal.appendChild(d);
+  }
+
+  // ── TODO: Firebase auth check — redirect to auth.html if not signed in ──
+  // ── TODO: Load user progress from Firebase Realtime DB ──
+</script>
+</body>
+</html>
